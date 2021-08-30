@@ -1,3 +1,3 @@
-import EyesPlugin from './plugin';
-export default EyesPlugin;
-export { EyesPlugin };
+import GesturesPlugin from './plugin';
+export default GesturesPlugin;
+export { GesturesPlugin };

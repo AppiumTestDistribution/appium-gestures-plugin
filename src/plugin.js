@@ -1,25 +1,19 @@
 import BasePlugin from '@appium/base-plugin';
 import log from './logger';
-import { Eyes } from '@applitools/eyes-selenium';
 
-export default class EyesPlugin extends BasePlugin {
+export default class GesturesPlugin extends BasePlugin {
   constructor(pluginName) {
     super(pluginName);
-    this.eyes = new Eyes();
   }
 
-  async createSession(next, driver, jwpDesCaps, jwpReqCaps, caps) {
-    this.eyes.setApiKey('API_KEY');
-    this.eyes.open(driver, 'Contacts', 'My first Appium native JS test!');
-    const session = await next();
-    if (session.error) {
-      log.info('session not created exception');
-    }
-    return session;
-  }
+  static newMethodMap = {
+    '/session/:sessionId/fake_data': {
+      POST: { command: 'dragAndDrop', payloadParams: { required: ['data'] } },
+    },
+  };
 
-  async deleteSession(next, driver, args) {
-    this.eyes.close();
-    await next();
+  async dragAndDrop(next, driver, ...args) {
+    log.info(driver, ...args);
+    // implementation
   }
 }

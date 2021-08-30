@@ -1,1 +1,1 @@
-# appium-eyes-plugin
+# appium-gestures-plugin

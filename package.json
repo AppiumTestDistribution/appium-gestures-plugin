@@ -1,5 +1,5 @@
 {
-  "name": "appium-eyes-plugin",
+  "name": "appium-gestures-plugin",
   "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AppiumTestDistribution/appium-eyes-plugin.git"
+    "url": "https://github.com/AppiumTestDistribution/appium-gestures-plugin.git"
   },
   "contributors": [
     {
@@ -25,13 +25,11 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AppiumTestDistribution/appium-eyes-plugin/issues"
+    "url": "https://github.com/AppiumTestDistribution/appium-gestures-plugin/issues"
   },
-  "homepage": "https://github.com/AppiumTestDistribution/appium-eyes-plugin#readme",
+  "homepage": "https://github.com/AppiumTestDistribution/appium-gestures-plugin#readme",
   "dependencies": {
-    "@appium/base-plugin": "^1.6.4",
-    "@applitools/eyes-selenium": "^4.55.2",
-    "selenium-webdriver": "^3.6.0"
+    "@appium/base-plugin": "^1.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -56,8 +54,8 @@
     "typescript": "^4.2.3"
   },
   "appium": {
-    "pluginName": "applitools-eyes",
-    "mainClass": "EyesPlugin"
+    "pluginName": "gestures",
+    "mainClass": "GesturesPlugin"
   },
   "engines": {
     "node": ">=10",

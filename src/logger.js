@@ -1,3 +1,3 @@
 import { logger } from 'appium-support';
-const log = logger.getLogger('applitools-eyes');
+const log = logger.getLogger('gestures');
 export default log;
