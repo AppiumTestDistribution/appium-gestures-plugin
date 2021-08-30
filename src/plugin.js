@@ -7,7 +7,7 @@ export default class GesturesPlugin extends BasePlugin {
   }
 
   static newMethodMap = {
-    '/session/:sessionId/fake_data': {
+    '/session/:sessionId/dragAndDrop': {
       POST: { command: 'dragAndDrop', payloadParams: { required: ['data'] } },
     },
   };
