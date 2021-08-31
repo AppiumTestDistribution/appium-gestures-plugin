@@ -2,20 +2,18 @@ import * as Element from '../element';
 import { post } from '../Api';
 import log from '../logger';
 
-export default async function dragAndDrop(driver, body) {
-  const host = `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}`;
-  const jwproxySession = driver.uiautomator2.jwproxy.sessionId;
-
+export default async function dragAndDrop(body, sessionInfo) {
+  console.log(sessionInfo);
   const [sourceLocation, sourceSize] = await Element.locationAndSizeOfElement(
-    host,
-    jwproxySession,
+    sessionInfo.url,
+    sessionInfo.jwProxySessionId,
     body.sourceId
   );
 
   const [destinationLocation, destinationSize] =
     await Element.locationAndSizeOfElement(
-      host,
-      jwproxySession,
+      sessionInfo.url,
+      sessionInfo.jwProxySessionId,
       body.destinationId
     );
 
@@ -73,7 +71,7 @@ export default async function dragAndDrop(driver, body) {
   };
   log.info(`Performing Drag and Drop with ${JSON.stringify(actionsData)}`);
   await post({
-    url: `${host}/wd/hub/session/${jwproxySession}/actions`,
+    url: `${sessionInfo.url}/wd/hub/session/${sessionInfo.jwProxySessionId}/actions`,
     data: actionsData,
   });
 }

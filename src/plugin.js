@@ -18,12 +18,27 @@ export default class GesturesPlugin extends BasePlugin {
   };
 
   shouldAvoidProxy(method, route, body) {
-    console.log('--------', method, route, body);
     this.body = body;
     return SOURCE_URL_RE.test(route);
   }
 
   async dragAndDrop(next, driver) {
-    await dragAndDrop(driver, this.body);
+    await dragAndDrop(this.body, this._constructSessionUrl(driver));
+  }
+
+  _constructSessionUrl(driver) {
+    const automationName = driver.caps.automationName;
+
+    if (automationName === 'XCuiTest') {
+      return {
+        url: `${driver.wda.wdaBaseUrl}:${driver.wda.wdaLocalPort}`,
+        jwProxySessionId: driver.wda.jwproxy.sessionId,
+      };
+    } else {
+      return {
+        url: `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}`,
+        jwProxySessionId: driver.uiautomator2.jwproxy.sessionId,
+      };
+    }
   }
 }
