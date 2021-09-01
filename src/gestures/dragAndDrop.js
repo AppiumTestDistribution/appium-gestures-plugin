@@ -7,24 +7,31 @@ export default async function dragAndDrop(body, sessionInfo) {
   const [sourceLocation, sourceSize] = await Element.locationAndSizeOfElement(
     sessionInfo.url,
     sessionInfo.jwProxySessionId,
-    body.sourceId
+    body.sourceId,
+    sessionInfo.automationName
   );
 
   const [destinationLocation, destinationSize] =
     await Element.locationAndSizeOfElement(
       sessionInfo.url,
       sessionInfo.jwProxySessionId,
-      body.destinationId
+      body.destinationId,
+      sessionInfo.automationName
     );
 
   const { x: sourceX, y: sourceY } = Element.getCenter(
-    await sourceLocation,
-    await sourceSize
+    sourceLocation,
+    sourceSize
   );
   const { x: destinationX, y: destinationY } = Element.getCenter(
-    await destinationLocation,
-    await destinationSize
+    destinationLocation,
+    destinationSize
   );
+
+  const androidPauseAction = {
+    duration: 0,
+    type: 'pause',
+  };
 
   const actionsData = {
     actions: [
@@ -35,10 +42,6 @@ export default async function dragAndDrop(body, sessionInfo) {
           pointerType: 'touch',
         },
         actions: [
-          {
-            duration: 0,
-            type: 'pause',
-          },
           {
             duration: 0,
             x: sourceX,
@@ -69,9 +72,19 @@ export default async function dragAndDrop(body, sessionInfo) {
       },
     ],
   };
+
   log.info(`Performing Drag and Drop with ${JSON.stringify(actionsData)}`);
-  await post({
-    url: `${sessionInfo.url}/wd/hub/session/${sessionInfo.jwProxySessionId}/actions`,
-    data: actionsData,
-  });
+  if (sessionInfo.automationName === 'XCuiTest') {
+    await post({
+      url: `${sessionInfo.url}/session/${sessionInfo.jwProxySessionId}/actions`,
+      data: actionsData,
+    });
+  } else {
+    const androidActions = actionsData;
+    androidActions.actions[0].actions.unshift(androidPauseAction);
+    await post({
+      url: `${sessionInfo.url}/wd/hub/session/${sessionInfo.jwProxySessionId}/actions`,
+      data: androidActions,
+    });
+  }
 }

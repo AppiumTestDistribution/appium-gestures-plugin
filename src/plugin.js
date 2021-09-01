@@ -31,13 +31,15 @@ export default class GesturesPlugin extends BasePlugin {
 
     if (automationName === 'XCuiTest') {
       return {
-        url: `${driver.wda.wdaBaseUrl}:${driver.wda.wdaLocalPort}`,
+        url: `${driver.wda.wdaBaseUrl}:${driver.wda.wdaRemotePort}`,
         jwProxySessionId: driver.wda.jwproxy.sessionId,
+        automationName,
       };
     } else {
       return {
         url: `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}`,
         jwProxySessionId: driver.uiautomator2.jwproxy.sessionId,
+        automationName,
       };
     }
   }
