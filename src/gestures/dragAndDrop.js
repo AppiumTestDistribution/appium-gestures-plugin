@@ -3,22 +3,15 @@ import { post } from '../Api';
 import log from '../logger';
 
 export default async function dragAndDrop(body, sessionInfo) {
-  console.log(sessionInfo);
   const [sourceLocation, sourceSize] = await Element.locationAndSizeOfElement(
-    sessionInfo.url,
-    sessionInfo.jwProxySessionId,
-    body.sourceId,
-    sessionInfo.automationName
+    Object.assign({}, sessionInfo, { elementId: body.sourceId })
   );
 
   const [destinationLocation, destinationSize] =
     await Element.locationAndSizeOfElement(
-      sessionInfo.url,
-      sessionInfo.jwProxySessionId,
-      body.destinationId,
-      sessionInfo.automationName
+      Object.assign({}, sessionInfo, { elementId: body.destinationId })
     );
-
+  
   const { x: sourceX, y: sourceY } = Element.getCenter(
     sourceLocation,
     sourceSize
@@ -73,17 +66,21 @@ export default async function dragAndDrop(body, sessionInfo) {
     ],
   };
 
-  log.info(`Performing Drag and Drop with ${JSON.stringify(actionsData)}`);
+  let url = `${sessionInfo.url}/session/${sessionInfo.jwProxySessionId}/actions`;
+  log.info(
+    `Performing Drag and Drop ${url} with ${JSON.stringify(actionsData)}`
+  );
+
   if (sessionInfo.automationName === 'XCuiTest') {
     await post({
-      url: `${sessionInfo.url}/session/${sessionInfo.jwProxySessionId}/actions`,
+      url,
       data: actionsData,
     });
   } else {
     const androidActions = actionsData;
     androidActions.actions[0].actions.unshift(androidPauseAction);
     await post({
-      url: `${sessionInfo.url}/wd/hub/session/${sessionInfo.jwProxySessionId}/actions`,
+      url,
       data: androidActions,
     });
   }

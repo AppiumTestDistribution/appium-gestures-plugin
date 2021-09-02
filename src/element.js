@@ -6,38 +6,36 @@ export function getCenter(location, size) {
     y: location.value.y + size.value.height / 2,
   };
 }
+const elementUrl = (options) =>
+  `${options.url}/session/${options.jwProxySessionId}/element/${options.elementId}`;
 
-export async function locationAndSizeOfElement(
-  url,
-  jwProxySessionId,
-  elementId,
-  automationName
-) {
-  if (automationName === 'XCuiTest') {
-    const rect = await this.getElementRect(url, jwProxySessionId, elementId);
+export async function locationAndSizeOfElement(options) {
+  const url = elementUrl(options);
+  if (options.automationName === 'XCuiTest') {
+    const rect = await this.getElementRect(url);
     return [rect, rect];
   } else {
     return await Promise.all([
-      this.getElementLocation(url, jwProxySessionId, elementId),
-      this.getElementSize(url, jwProxySessionId, elementId),
+      this.getElementLocation(url),
+      this.getElementSize(url),
     ]);
   }
 }
 
-export async function getElementSize(url, jwProxySessionId, elementId) {
+export async function getElementSize(elUrl) {
   return await get({
-    url: `${url}/wd/hub/session/${jwProxySessionId}/element/${elementId}/size`,
+    url: `${elUrl}/size`,
   });
 }
 
-export async function getElementLocation(url, jwProxySessionId, elementId) {
+export async function getElementLocation(elUrl) {
   return await get({
-    url: `${url}/wd/hub/session/${jwProxySessionId}/element/${elementId}/location`,
+    url: `${elUrl}/location`,
   });
 }
 
-export async function getElementRect(url, jwProxySessionId, elementId) {
+export async function getElementRect(elUrl) {
   return await get({
-    url: `${url}/session/${jwProxySessionId}/element/${elementId}/rect`,
+    url: `${elUrl}/rect`,
   });
 }

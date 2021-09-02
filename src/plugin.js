@@ -37,7 +37,7 @@ export default class GesturesPlugin extends BasePlugin {
       };
     } else {
       return {
-        url: `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}`,
+        url: `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}/wd/hub`,
         jwProxySessionId: driver.uiautomator2.jwproxy.sessionId,
         automationName,
       };
