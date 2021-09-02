@@ -3,23 +3,21 @@ import { post } from '../Api';
 import log from '../logger';
 
 export default async function dragAndDrop(body, sessionInfo) {
-  const [sourceLocation, sourceSize] = await Element.locationAndSizeOfElement(
-    Object.assign({}, sessionInfo, { elementId: body.sourceId })
-  );
+  const [[sourceLocation, sourceSize], [destinationLocation, destinationSize]] =
+    await Promise.all([
+      Element.locationAndSizeOfElement(
+        Object.assign({}, sessionInfo, { elementId: body.sourceId })
+      ),
+      Element.locationAndSizeOfElement(
+        Object.assign({}, sessionInfo, { elementId: body.destinationId })
+      ),
+    ]);
 
-  const [destinationLocation, destinationSize] =
-    await Element.locationAndSizeOfElement(
-      Object.assign({}, sessionInfo, { elementId: body.destinationId })
-    );
-  
-  const { x: sourceX, y: sourceY } = Element.getCenter(
-    sourceLocation,
-    sourceSize
-  );
-  const { x: destinationX, y: destinationY } = Element.getCenter(
-    destinationLocation,
-    destinationSize
-  );
+  const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] =
+    await Promise.all([
+      Element.getCenter(sourceLocation, sourceSize),
+      Element.getCenter(destinationLocation, destinationSize),
+    ]);
 
   const androidPauseAction = {
     duration: 0,
