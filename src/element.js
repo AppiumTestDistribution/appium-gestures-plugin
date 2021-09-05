@@ -12,30 +12,30 @@ const elementUrl = (options) =>
 export async function locationAndSizeOfElement(options) {
   const url = elementUrl(options);
   if (options.automationName === 'XCuiTest') {
-    const rect = await this.getElementRect(url);
+    const rect = await getElementRect(url);
     return [rect, rect];
   } else {
-    return await Promise.all([
-      this.getElementLocation(url),
-      this.getElementSize(url),
-    ]);
+    return await Promise.all([getElementLocation(url), getElementSize(url)]);
   }
 }
 
-export async function getElementSize(elUrl) {
+async function getElementSize(elementUrl) {
   return await get({
-    url: `${elUrl}/size`,
+    url: `${elementUrl}/size`,
   });
 }
 
-export async function getElementLocation(elUrl) {
+export async function getElementLocation(elementUrl) {
+  console.log({
+    url: `${elementUrl}/location`,
+  });
   return await get({
-    url: `${elUrl}/location`,
+    url: `${elementUrl}/location`,
   });
 }
 
-export async function getElementRect(elUrl) {
+async function getElementRect(elementUrl) {
   return await get({
-    url: `${elUrl}/rect`,
+    url: `${elementUrl}/rect`,
   });
 }

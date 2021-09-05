@@ -1,5 +1,6 @@
 import BasePlugin from '@appium/base-plugin';
 import dragAndDrop from './gestures/dragAndDrop';
+import SwipeBuilder from './gestures/swipe';
 
 const SOURCE_URL_RE = new RegExp('/session/[^/]+/plugin/actions/');
 
@@ -15,6 +16,12 @@ export default class GesturesPlugin extends BasePlugin {
         payloadParams: { required: ['sourceId', 'destinationId'] },
       },
     },
+    '/session/:sessionId/plugin/actions/swipe': {
+      POST: {
+        command: 'swipe',
+        payloadParams: { required: ['elementId', 'percentage'] },
+      },
+    },
   };
 
   shouldAvoidProxy(method, route, body) {
@@ -22,25 +29,12 @@ export default class GesturesPlugin extends BasePlugin {
     return SOURCE_URL_RE.test(route);
   }
 
-  async dragAndDrop(next, driver) {
-    await dragAndDrop(this.body, this._constructSessionUrl(driver));
+  async swipe(next, driver) {
+    const builder = SwipeBuilder(this.body, driver);
+    await builder.horizontal;
   }
 
-  _constructSessionUrl(driver) {
-    const automationName = driver.caps.automationName;
-
-    if (automationName === 'XCuiTest') {
-      return {
-        url: `${driver.wda.wdaBaseUrl}:${driver.wda.wdaRemotePort}`,
-        jwProxySessionId: driver.wda.jwproxy.sessionId,
-        automationName,
-      };
-    } else {
-      return {
-        url: `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}/wd/hub`,
-        jwProxySessionId: driver.uiautomator2.jwproxy.sessionId,
-        automationName,
-      };
-    }
+  async dragAndDrop(next, driver) {
+    await dragAndDrop(this.body, driver);
   }
 }
