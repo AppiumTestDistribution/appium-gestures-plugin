@@ -1,22 +1,30 @@
 import * as Element from '../element';
 import { post } from '../Api';
 import log from '../logger';
+import sessionInfo from '../sessionInfo';
 
-export default async function dragAndDrop(body, sessionInfo) {
-  const [[sourceLocation, sourceSize], [destinationLocation, destinationSize]] =
-    await Promise.all([
-      Element.locationAndSizeOfElement(
-        Object.assign({}, sessionInfo, { elementId: body.sourceId })
-      ),
-      Element.locationAndSizeOfElement(
-        Object.assign({}, sessionInfo, { elementId: body.destinationId })
-      ),
-    ]);
+export default function DragAndDropBuilder(body, driver) {
+  const driverInfo = sessionInfo(driver);
+  return {
+    dragAndDrop: dragAndDrop(body, driverInfo),
+  };
+}
+
+async function dragAndDrop(body, driverInfo) {
+  const sourceElementUrl = `${driverInfo.driverUrl}/element/${body.sourceId}`;
+  const destinationElementUrl = `${driverInfo.driverUrl}/element/${body.destinationId}`;
+
+  const [source, destination] = await Promise.all([
+    Element.getElementRect(sourceElementUrl),
+    Element.getElementRect(destinationElementUrl),
+  ]);
+
+  console.log('Source', source, 'Destination', destination);
 
   const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] =
     await Promise.all([
-      Element.getCenter(sourceLocation, sourceSize),
-      Element.getCenter(destinationLocation, destinationSize),
+      Element.getCenter(source),
+      Element.getCenter(destination),
     ]);
 
   const androidPauseAction = {
@@ -64,21 +72,22 @@ export default async function dragAndDrop(body, sessionInfo) {
     ],
   };
 
-  let url = `${sessionInfo.url}/session/${sessionInfo.jwProxySessionId}/actions`;
+  let actionsUrl = `${driverInfo.driverUrl}/actions`;
   log.info(
-    `Performing Drag and Drop ${url} with ${JSON.stringify(actionsData)}`
+    `Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(actionsData)}`
   );
 
-  if (sessionInfo.automationName === 'XCuiTest') {
+  if (driverInfo.automationName === 'XCuiTest') {
     await post({
-      url,
+      url: actionsUrl,
       data: actionsData,
     });
   } else {
+    log.info('Drag and Drop for android');
     const androidActions = actionsData;
     androidActions.actions[0].actions.unshift(androidPauseAction);
     await post({
-      url,
+      url: actionsUrl,
       data: androidActions,
     });
   }
