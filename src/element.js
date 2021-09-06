@@ -34,8 +34,10 @@ export async function getElementLocation(elementUrl) {
   });
 }
 
-async function getElementRect(elementUrl) {
-  return await get({
-    url: `${elementUrl}/rect`,
-  });
+export async function getElementRect(elementUrl) {
+  return (
+    await get({
+      url: `${elementUrl}/rect`,
+    })
+  ).value;
 }

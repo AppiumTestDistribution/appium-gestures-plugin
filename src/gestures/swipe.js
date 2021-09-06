@@ -11,12 +11,9 @@ export default function SwipeBuilder(body, driver) {
 }
 
 async function swipe(body, driverInfo) {
-  console.log('Inside swipe', body, driverInfo);
   const url = `${driverInfo.driverUrl}/element/${body.elementId}`;
-  console.log('----', url);
-  const { value } = await Element.getElementLocation(url);
-  console.log('*(*****', value.x, value.y);
-  const destinationX = value.x + (body.percentage * value.x) / 100;
+  const { x, y, width } = await Element.getElementRect(url);
+  const destinationX = x + (body.percentage * width) / 100;
   const actionsData = {
     actions: [
       {
@@ -27,8 +24,8 @@ async function swipe(body, driverInfo) {
           { duration: 0, type: 'pause' },
           {
             duration: 0,
-            x: value.x,
-            y: value.y,
+            x,
+            y,
             type: 'pointerMove',
             origin: 'viewport',
           },
@@ -37,7 +34,7 @@ async function swipe(body, driverInfo) {
           {
             duration: 600,
             x: destinationX,
-            y: value.y,
+            y,
             type: 'pointerMove',
             origin: 'viewport',
           },
@@ -53,12 +50,12 @@ async function swipe(body, driverInfo) {
 
   if (driverInfo.automationName === 'XCuiTest') {
     await post({
-      url,
+      url: actionsUrl,
       data: actionsData,
     });
   } else {
     await post({
-      url,
+      url: actionsUrl,
       data: actionsData,
     });
   }
