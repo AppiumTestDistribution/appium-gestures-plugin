@@ -35,6 +35,7 @@ export default class GesturesPlugin extends BasePlugin {
   }
 
   async dragAndDrop(next, driver) {
-    await dragAndDrop(this.body, driver);
+    const builder = dragAndDrop(this.body, driver);
+    await builder.dragAndDrop;
   }
 }
