@@ -1,6 +1,6 @@
 # appium-gestures-plugin
 
-This is an Appium plugin designed to perform complex gestures using W3C Actions.
+This is an Appium plugin designed to perform gestures using W3C Actions.
 
 ## Prerequisite
 
