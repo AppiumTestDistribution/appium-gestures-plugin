@@ -14,6 +14,10 @@ async function swipe(body, driverInfo) {
   const url = `${driverInfo.driverUrl}/element/${body.elementId}`;
   const { x, y, width } = await Element.getElementRect(url);
   const destinationX = x + (body.percentage * width) / 100;
+  const androidPauseAction = {
+    duration: 0,
+    type: 'pause',
+  };
   const actionsData = {
     actions: [
       {
@@ -21,7 +25,6 @@ async function swipe(body, driverInfo) {
         type: 'pointer',
         parameters: { pointerType: 'touch' },
         actions: [
-          { duration: 0, type: 'pause' },
           {
             duration: 0,
             x,
@@ -54,6 +57,8 @@ async function swipe(body, driverInfo) {
       data: actionsData,
     });
   } else {
+    const androidActions = actionsData;
+    androidActions.actions[0].actions.unshift(androidPauseAction);
     await post({
       url: actionsUrl,
       data: actionsData,
