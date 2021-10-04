@@ -30,7 +30,7 @@
   "homepage": "https://github.com/AppiumTestDistribution/appium-gestures-plugin#readme",
   "dependencies": {
     "@appium/base-plugin": "^1.6.4",
-    "axios": "^0.21.1"
+    "axios": "^0.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
