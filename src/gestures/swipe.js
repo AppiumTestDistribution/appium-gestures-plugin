@@ -6,11 +6,11 @@ import { post } from '../Api';
 export default function SwipeBuilder(body, driver) {
   const driverInfo = sessionInfo(driver);
   return {
-    horizontal: swipe(body, driverInfo),
+    horizontal: horizontalSwipe(body, driverInfo),
   };
 }
 
-async function swipe(body, driverInfo) {
+async function horizontalSwipe(body, driverInfo) {
   const url = `${driverInfo.driverUrl}/element/${body.elementId}`;
   const { x, y, width } = await Element.getElementRect(url);
   const destinationX = x + (body.percentage * width) / 100;
