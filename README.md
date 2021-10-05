@@ -43,8 +43,9 @@ dragNDrop.addAction(finger.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg
 driver.perform(singletonList(dragNDrop));
 ```
 
+# Usage
 
-# Drag and Drop test with plugin
+# Drag and Drop
 ```
 MobileElement source = (MobileElement) new WebDriverWait(driver, 30)
            .until(elementToBeClickable(MobileBy.AccessibilityId("dragMe")));
@@ -55,3 +56,27 @@ driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/dra
            driver.getSessionId()), "dragAndDrop");
 driver.execute("dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
 ```
+# Horizontal Swipe
+```
+MobileElement source = (MobileElement) new WebDriverWait(driver, 30)
+           .until(elementToBeClickable(MobileBy.AccessibilityId("slider")));
+
+
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", 
+           driver.getSessionId()), "swipe");
+driver.execute("dragAndDrop", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
+```
+
+## Supported
+
+* Horizontal Swipe
+* Drag and Drop
+### TODO
+
+* swipe vertically
+* double click
+* longpress
+* zoom
+* multi finger swipe
+
+
