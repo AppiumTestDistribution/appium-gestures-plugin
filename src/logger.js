@@ -1,3 +1,3 @@
-import { logger } from 'appium-support';
-const log = logger.getLogger('gestures');
-export default log;
+const logger = require("@appium/support").logger;
+const log = logger.getLogger("gestures");
+module.exports = log;

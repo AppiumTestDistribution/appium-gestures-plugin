@@ -7,7 +7,9 @@
     "build": "npx tsc",
     "prepublish": "npx tsc",
     "lint": "eslint '**/*.js' --fix",
-    "prettier": "prettier '**/*.js' --write --single-quote"
+    "prettier": "prettier '**/*.js' --write --single-quote",
+    "install-plugin": "npm run build && appium plugin install --source=local $(pwd)",
+    "reinstall-plugin": "(appium plugin uninstall gestures || exit 0) && npm run install-plugin"
   },
   "repository": {
     "type": "git",
@@ -29,7 +31,8 @@
   },
   "homepage": "https://github.com/AppiumTestDistribution/appium-gestures-plugin#readme",
   "dependencies": {
-    "@appium/base-plugin": "^1.6.4",
+    "@appium/base-plugin": "^1.8.1",
+    "@appium/support": "^2.55.2",
     "axios": "^0.21.2"
   },
   "devDependencies": {
