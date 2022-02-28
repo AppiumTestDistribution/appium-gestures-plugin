@@ -17,11 +17,10 @@ export async function post(options) {
   const config = {
     method: 'post',
     url: options.url,
-    headers: {
-      'Content-Type': 'application/json',
-    },
     data,
   };
+  console.log(`post: ${JSON.stringify(config)}`);
   const response = await axios(config);
-  return await response.data;
+  const res = await response.data;
+  return res;
 }
