@@ -3,17 +3,17 @@ import * as Element from '../element';
 import log from '../logger';
 import { post } from '../Api';
 
-export default function SwipeBuilder(body, driver) {
+export default function SwipeBuilder(elementId, percentage, driver) {
   const driverInfo = sessionInfo(driver);
   return {
-    horizontal: horizontalSwipe(body, driverInfo),
+    horizontal: horizontalSwipe(elementId, percentage, driverInfo),
   };
 }
 
-async function horizontalSwipe(body, driverInfo) {
-  const url = `${driverInfo.driverUrl}/element/${body.elementId}`;
+async function horizontalSwipe(elementId, percentage, driverInfo) {
+  const url = `${driverInfo.driverUrl}/element/${elementId}`;
   const { x, y, width } = await Element.getElementRect(url);
-  const destinationX = x + (body.percentage * width) / 100;
+  const destinationX = x + (percentage * width) / 100;
   const androidPauseAction = {
     duration: 0,
     type: 'pause',

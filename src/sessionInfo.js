@@ -1,14 +1,23 @@
 export default function sessionInfo(driver) {
-  console.log(`sessionInfo: ${driver.uiautomator2.host}`);
-  console.log(`sessionInfo: ${driver.uiautomator2.systemPort}`);
-  const automationName = driver.caps['appium:automationName'];
+  const automationName = driver.caps.automationName;
 
-  const baseUrl = `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}/wd/hub`;
-  const jwProxySessionId = driver.uiautomator2.jwproxy.sessionId;
-  return {
-    baseUrl,
-    jwProxySessionId,
-    automationName,
-    driverUrl: `${baseUrl}/session/${jwProxySessionId}`,
-  };
+  if (automationName === 'XCuiTest') {
+    const baseUrl = `${driver.wda.wdaBaseUrl}:${driver.wda.wdaRemotePort}`;
+    const jwProxySessionId = driver.wda.jwproxy.sessionId;
+    return {
+      baseUrl,
+      jwProxySessionId,
+      automationName,
+      driverUrl: `${baseUrl}/session/${jwProxySessionId}`,
+    };
+  } else {
+    const baseUrl = `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}/wd/hub`;
+    const jwProxySessionId = driver.uiautomator2.jwproxy.sessionId;
+    return {
+      baseUrl,
+      jwProxySessionId,
+      automationName,
+      driverUrl: `${baseUrl}/session/${jwProxySessionId}`,
+    };
+  }
 }

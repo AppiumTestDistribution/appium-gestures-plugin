@@ -71,17 +71,22 @@ async function dragAndDrop(sourceId, destinationId, driverInfo) {
   };
 
   let actionsUrl = `${driverInfo.driverUrl}/actions`;
-
-  log.info('Drag and Drop for android', actionsUrl);
-  const androidActions = actionsData;
-  androidActions.actions[0].actions.unshift(androidPauseAction);
   log.info(
-    `Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(
-      androidActions
-    )}`
+    `Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(actionsData)}`
   );
-  await post({
-    url: actionsUrl,
-    data: androidActions,
-  });
+
+  if (driverInfo.automationName === 'XCuiTest') {
+    await post({
+      url: actionsUrl,
+      data: actionsData,
+    });
+  } else {
+    log.info('Drag and Drop for android');
+    const androidActions = actionsData;
+    androidActions.actions[0].actions.unshift(androidPauseAction);
+    await post({
+      url: actionsUrl,
+      data: androidActions,
+    });
+  }
 }

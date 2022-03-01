@@ -24,8 +24,8 @@ export default class GesturesPlugin extends BasePlugin {
     },
   };
 
-  async swipe(next, driver, ...args) {
-    const builder = SwipeBuilder(...args, driver);
+  async swipe(next, driver, elementId, percentage) {
+    const builder = SwipeBuilder(elementId, percentage, driver);
     await builder.horizontal;
   }
 
