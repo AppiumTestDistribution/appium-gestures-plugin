@@ -3,23 +3,21 @@ import { post } from '../Api';
 import log from '../logger';
 import sessionInfo from '../sessionInfo';
 
-export default function DragAndDropBuilder(body, driver) {
+export default function DragAndDropBuilder(sourceId, destinationId, driver) {
   const driverInfo = sessionInfo(driver);
   return {
-    dragAndDrop: dragAndDrop(body, driverInfo),
+    dragAndDrop: dragAndDrop(sourceId, destinationId, driverInfo),
   };
 }
 
-async function dragAndDrop(body, driverInfo) {
-  const sourceElementUrl = `${driverInfo.driverUrl}/element/${body.sourceId}`;
-  const destinationElementUrl = `${driverInfo.driverUrl}/element/${body.destinationId}`;
+async function dragAndDrop(sourceId, destinationId, driverInfo) {
+  const sourceElementUrl = `${driverInfo.driverUrl}/element/${sourceId}`;
+  const destinationElementUrl = `${driverInfo.driverUrl}/element/${destinationId}`;
 
   const [source, destination] = await Promise.all([
     Element.getElementRect(sourceElementUrl),
     Element.getElementRect(destinationElementUrl),
   ]);
-
-  console.log('Source', source, 'Destination', destination);
 
   const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] =
     await Promise.all([

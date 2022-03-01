@@ -2,8 +2,6 @@ import BasePlugin from '@appium/base-plugin';
 import dragAndDrop from './gestures/dragAndDrop';
 import SwipeBuilder from './gestures/swipe';
 
-const SOURCE_URL_RE = new RegExp('/session/[^/]+/plugin/actions/');
-
 export default class GesturesPlugin extends BasePlugin {
   constructor(pluginName) {
     super(pluginName);
@@ -14,28 +12,25 @@ export default class GesturesPlugin extends BasePlugin {
       POST: {
         command: 'dragAndDrop',
         payloadParams: { required: ['sourceId', 'destinationId'] },
+        neverProxy: true,
       },
     },
     '/session/:sessionId/plugin/actions/swipe': {
       POST: {
         command: 'swipe',
         payloadParams: { required: ['elementId', 'percentage'] },
+        neverProxy: true,
       },
     },
   };
 
-  shouldAvoidProxy(method, route, body) {
-    this.body = body;
-    return SOURCE_URL_RE.test(route);
-  }
-
-  async swipe(next, driver) {
-    const builder = SwipeBuilder(this.body, driver);
+  async swipe(next, driver, elementId, percentage) {
+    const builder = SwipeBuilder(elementId, percentage, driver);
     await builder.horizontal;
   }
 
-  async dragAndDrop(next, driver) {
-    const builder = dragAndDrop(this.body, driver);
+  async dragAndDrop(next, driver, sourceId, destinationId) {
+    const builder = dragAndDrop(sourceId, destinationId, driver);
     await builder.dragAndDrop;
   }
 }
