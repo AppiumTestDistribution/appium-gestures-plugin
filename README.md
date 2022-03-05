@@ -19,10 +19,11 @@ appium plugin install --source=npm appium-gestures-plugin
 The plugin will not be active unless turned on when invoking the Appium server:
 
 ```
-appium --plugins=gestures
+appium --use-plugins=gestures
 ```
 
 # Drag and Drop test without plugin
+
 ```
 MobileElement dragMe = (MobileElement) new WebDriverWait(driver, 30)
           .until(elementToBeClickable(MobileBy.AccessibilityId("dragMe")));
