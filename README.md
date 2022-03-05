@@ -67,6 +67,32 @@ driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swi
 driver.execute("dragAndDrop", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
 ```
 
+# WDIO 
+
+```
+driver.addCommand(
+      'dragAndDrop',
+      command('POST', '/session/:sessionId/plugin/actions/dragAndDrop', {
+        command: 'dragAndDrop',
+        parameters: [
+          {
+            name: 'sourceId',
+            type: 'string',
+            description: 'a valid parameter',
+            required: true,
+          },
+          {
+            name: 'destinationId',
+            type: 'string',
+            description: 'a valid parameter',
+            required: true,
+          },
+        ],
+      })
+    );
+    await driver.dragAndDrop(sourceId, destinationId);
+    
+```
 ## Supported
 
 * Horizontal Swipe
