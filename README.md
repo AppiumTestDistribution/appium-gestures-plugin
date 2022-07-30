@@ -25,11 +25,9 @@ appium --use-plugins=gestures
 # Drag and Drop test without plugin
 
 ```
-MobileElement dragMe = (MobileElement) new WebDriverWait(driver, 30)
-          .until(elementToBeClickable(MobileBy.AccessibilityId("dragMe")));
+WebElement dragMe = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
 Point source = dragMe.getCenter();
-MobileElement dropzone = (MobileElement) new WebDriverWait(driver, 30)
-          .until(elementToBeClickable(MobileBy.AccessibilityId("dropzone")));
+WebElement dropzone = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
 Point target = dropzone.getCenter();
 PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
 Sequence dragNDrop = new Sequence(finger, 1);
@@ -47,28 +45,29 @@ driver.perform(singletonList(dragNDrop));
 # Usage
 
 # Drag and Drop
-```
-MobileElement source = (MobileElement) new WebDriverWait(driver, 30)
-           .until(elementToBeClickable(MobileBy.AccessibilityId("dragMe")));
-MobileElement destination = (MobileElement) new WebDriverWait(driver, 30)
-           .until(elementToBeClickable(MobileBy.AccessibilityId("dropzone")));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/dragAndDrop", 
-           driver.getSessionId()), "dragAndDrop");
+```
+RemoteWebElement source = (RemoteWebElement) wait
+                .until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
+RemoteWebElement destination = (RemoteWebElement) wait
+                .until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
+
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/dragAndDrop",
+                driver.getSessionId()), "dragAndDrop");
 driver.execute("dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
 ```
+
 # Horizontal Swipe
+
 ```
-MobileElement source = (MobileElement) new WebDriverWait(driver, 30)
-           .until(elementToBeClickable(MobileBy.AccessibilityId("slider")));
+RemoteWebElement source = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("slider")));
 
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", driver.getSessionId()), "swipe");
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", 
-           driver.getSessionId()), "swipe");
-driver.execute("dragAndDrop", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
+driver.execute("swipe", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
 ```
 
-# WDIO 
+# WDIO
 
 ```
 driver.addCommand(
@@ -92,18 +91,18 @@ driver.addCommand(
       })
     );
     await driver.dragAndDrop(sourceId, destinationId);
-    
+
 ```
+
 ## Supported
 
-* Horizontal Swipe
-* Drag and Drop
+- Horizontal Swipe
+- Drag and Drop
+
 ### TODO
 
-* swipe vertically
-* double click
-* longpress
-* zoom
-* multi finger swipe
-
-
+- swipe vertically
+- double click
+- longpress
+- zoom
+- multi finger swipe
