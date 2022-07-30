@@ -47,9 +47,7 @@ async function horizontalSwipe(elementId, percentage, driverInfo) {
     ],
   };
   let actionsUrl = `${driverInfo.driverUrl}/actions`;
-  log.info(
-    `Performing Swipe ${actionsUrl} with ${JSON.stringify(actionsData)}`
-  );
+  log.info(`Performing Swipe ${actionsUrl} with ${JSON.stringify(actionsData)}`);
 
   if (driverInfo.automationName === 'XCuiTest') {
     await post({

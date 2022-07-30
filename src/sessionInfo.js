@@ -11,7 +11,7 @@ export default function sessionInfo(driver) {
       driverUrl: `${baseUrl}/session/${jwProxySessionId}`,
     };
   } else {
-    const baseUrl = `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}/wd/hub`;
+    const baseUrl = `http://${driver.uiautomator2.host}:${driver.uiautomator2.systemPort}`;
     const jwProxySessionId = driver.uiautomator2.jwproxy.sessionId;
     return {
       baseUrl,
