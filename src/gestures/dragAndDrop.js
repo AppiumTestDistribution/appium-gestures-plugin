@@ -19,11 +19,10 @@ async function dragAndDrop(sourceId, destinationId, driverInfo) {
     Element.getElementRect(destinationElementUrl),
   ]);
 
-  const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] =
-    await Promise.all([
-      Element.getCenter(source),
-      Element.getCenter(destination),
-    ]);
+  const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] = await Promise.all([
+    Element.getCenter(source),
+    Element.getCenter(destination),
+  ]);
 
   const androidPauseAction = {
     duration: 0,
@@ -71,9 +70,7 @@ async function dragAndDrop(sourceId, destinationId, driverInfo) {
   };
 
   let actionsUrl = `${driverInfo.driverUrl}/actions`;
-  log.info(
-    `Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(actionsData)}`
-  );
+  log.info(`Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(actionsData)}`);
 
   if (driverInfo.automationName === 'XCuiTest') {
     await post({

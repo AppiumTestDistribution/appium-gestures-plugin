@@ -67,6 +67,16 @@ driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swi
 driver.execute("swipe", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
 ```
 
+# Double Tap
+
+```
+RemoteWebElement doubleTapMe = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("doubleTapMe"));
+
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/doubleTap", driver.getSessionId()), "doubleTap");
+
+driver.execute("doubleTap", Map.of("elementId", doubleTapMe.getId()));
+```
+
 # WDIO
 
 ```
@@ -98,11 +108,11 @@ driver.addCommand(
 
 - Horizontal Swipe
 - Drag and Drop
+- Double Tap
 
 ### TODO
 
 - swipe vertically
-- double click
 - longpress
 - zoom
 - multi finger swipe

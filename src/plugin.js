@@ -1,6 +1,7 @@
 import BasePlugin from '@appium/base-plugin';
 import dragAndDrop from './gestures/dragAndDrop';
 import SwipeBuilder from './gestures/swipe';
+import doubleTapBuilder from './gestures/doubleTap';
 
 export default class GesturesPlugin extends BasePlugin {
   constructor(pluginName) {
@@ -22,6 +23,13 @@ export default class GesturesPlugin extends BasePlugin {
         neverProxy: true,
       },
     },
+    '/session/:sessionId/plugin/actions/doubleTap': {
+      POST: {
+        command: 'doubleTap',
+        payloadParams: { required: ['elementId'] },
+        neverProxy: true,
+      },
+    },
   };
 
   async swipe(next, driver, elementId, percentage) {
@@ -32,5 +40,10 @@ export default class GesturesPlugin extends BasePlugin {
   async dragAndDrop(next, driver, sourceId, destinationId) {
     const builder = dragAndDrop(sourceId, destinationId, driver);
     await builder.dragAndDrop;
+  }
+
+  async doubleTap(next, driver, elementId) {
+    const builder = doubleTapBuilder(elementId, driver);
+    await builder.doubleTap;
   }
 }
