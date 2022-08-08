@@ -3,17 +3,40 @@ import * as Element from '../element';
 import log from '../logger';
 import { post } from '../Api';
 
-export default function SwipeBuilder(elementId, percentage, driver) {
+export default function SwipeBuilder(elementId, percentage, direction, driver) {
   const driverInfo = sessionInfo(driver);
   return {
-    horizontal: horizontalSwipe(elementId, percentage, driverInfo),
+    swipe: swipe(elementId, percentage, direction, driverInfo),
   };
 }
 
-async function horizontalSwipe(elementId, percentage, driverInfo) {
+async function swipe(elementId, percentage, direction, driverInfo) {
   const url = `${driverInfo.driverUrl}/element/${elementId}`;
-  const { x, y, width } = await Element.getElementRect(url);
-  const destinationX = x + (percentage * width) / 100;
+  const value = await Element.getElementRect(url);
+  log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
+  const { x, y } = Element.getCenter(value);
+  let sourceX, sourceY, destinationX, destinationY;
+  if (direction === 'left') {
+    sourceX = x + (value.width * 49) / 100;
+    sourceY = y;
+    destinationX = (sourceX * percentage) / 100;
+    destinationY = y;
+  } else if (direction === 'right') {
+    sourceX = x - (value.width * 49) / 100;
+    sourceY = y;
+    destinationX = sourceX + (sourceX * percentage) / 100;
+    destinationY = y;
+  } else if (direction === 'up') {
+    sourceX = x;
+    sourceY = y + (value.height * 49) / 100;
+    destinationX = x;
+    destinationY = (sourceY * percentage) / 100;
+  } else if (direction === 'down') {
+    sourceX = x;
+    sourceY = y - (value.height * 49) / 100;
+    destinationX = x;
+    destinationY = sourceY + (sourceY * percentage) / 100;
+  }
   const androidPauseAction = {
     duration: 0,
     type: 'pause',
@@ -27,8 +50,8 @@ async function horizontalSwipe(elementId, percentage, driverInfo) {
         actions: [
           {
             duration: 0,
-            x,
-            y,
+            x: sourceX,
+            y: sourceY,
             type: 'pointerMove',
             origin: 'viewport',
           },
@@ -37,7 +60,7 @@ async function horizontalSwipe(elementId, percentage, driverInfo) {
           {
             duration: 600,
             x: destinationX,
-            y,
+            y: destinationY,
             type: 'pointerMove',
             origin: 'viewport',
           },

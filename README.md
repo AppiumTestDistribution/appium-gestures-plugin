@@ -60,11 +60,21 @@ driver.execute("dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "desti
 # Horizontal Swipe
 
 ```
-RemoteWebElement source = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("slider")));
+RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("slider"));
 
 driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", driver.getSessionId()), "swipe");
 
-driver.execute("swipe", ImmutableMap.of("elementId", source.getId(), "percentage", 50));
+driver.execute("swipe", Map.of("elementId", slider.getId(), "percentage", 50, "direction", "right"));
+```
+
+# Vertical Swipe
+
+```
+RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("listview"));
+
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", driver.getSessionId()), "swipe");
+
+driver.execute("swipe", Map.of("elementId", slider.getId(), "percentage", 50, "direction", "up"));
 ```
 
 # Double Tap
@@ -106,13 +116,12 @@ driver.addCommand(
 
 ## Supported
 
-- Horizontal Swipe
+- Swipe Left, right, up and down
 - Drag and Drop
 - Double Tap
 
 ### TODO
 
-- swipe vertically
 - longpress
 - zoom
 - multi finger swipe
