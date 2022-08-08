@@ -19,7 +19,7 @@ export default class GesturesPlugin extends BasePlugin {
     '/session/:sessionId/plugin/actions/swipe': {
       POST: {
         command: 'swipe',
-        payloadParams: { required: ['elementId', 'percentage'] },
+        payloadParams: { required: ['elementId', 'percentage', 'direction'] },
         neverProxy: true,
       },
     },
@@ -32,9 +32,9 @@ export default class GesturesPlugin extends BasePlugin {
     },
   };
 
-  async swipe(next, driver, elementId, percentage) {
-    const builder = SwipeBuilder(elementId, percentage, driver);
-    await builder.horizontal;
+  async swipe(next, driver, elementId, percentage, direction) {
+    const builder = SwipeBuilder(elementId, percentage, direction, driver);
+    await builder.swipe;
   }
 
   async dragAndDrop(next, driver, sourceId, destinationId) {
