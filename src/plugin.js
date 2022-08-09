@@ -2,6 +2,7 @@ import BasePlugin from '@appium/base-plugin';
 import dragAndDrop from './gestures/dragAndDrop';
 import SwipeBuilder from './gestures/swipe';
 import doubleTapBuilder from './gestures/doubleTap';
+import longPressBuilder from './gestures/longPress';
 
 export default class GesturesPlugin extends BasePlugin {
   constructor(pluginName) {
@@ -30,6 +31,13 @@ export default class GesturesPlugin extends BasePlugin {
         neverProxy: true,
       },
     },
+    '/session/:sessionId/plugin/actions/longPress': {
+      POST: {
+        command: 'longPress',
+        payloadParams: { required: ['elementId', 'pressure', 'duration'] },
+        neverProxy: true,
+      },
+    },
   };
 
   async swipe(next, driver, elementId, percentage, direction) {
@@ -45,5 +53,10 @@ export default class GesturesPlugin extends BasePlugin {
   async doubleTap(next, driver, elementId) {
     const builder = doubleTapBuilder(elementId, driver);
     await builder.doubleTap;
+  }
+
+  async longPress(next, driver, elementId, pressure, duration) {
+    const builder = longPressBuilder(elementId, pressure, duration, driver);
+    await builder.longPress;
   }
 }
