@@ -87,6 +87,19 @@ driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/dou
 driver.execute("doubleTap", Map.of("elementId", doubleTapMe.getId()));
 ```
 
+# Long Press
+
+Pressure has to be between 0 and 1.
+
+```
+RemoteWebElement longPress = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("longpress"));
+
+driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/longPress", androidDriver.getSessionId()), "longPress");
+
+driver.execute("longPress", Map.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
+
+```
+
 # WDIO
 
 ```
@@ -110,7 +123,7 @@ driver.addCommand(
         ],
       })
     );
-    await driver.dragAndDrop(sourceId, destinationId);
+await driver.dragAndDrop(sourceId, destinationId);
 
 ```
 
@@ -119,9 +132,13 @@ driver.addCommand(
 - Swipe Left, right, up and down
 - Drag and Drop
 - Double Tap
+- Long Press
 
 ### TODO
 
-- longpress
 - zoom
 - multi finger swipe
+
+```
+
+```
