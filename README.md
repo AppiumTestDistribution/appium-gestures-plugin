@@ -124,7 +124,6 @@ driver.addCommand(
       })
     );
 await driver.dragAndDrop(sourceId, destinationId);
-
 ```
 
 ## Supported
@@ -138,7 +137,3 @@ await driver.dragAndDrop(sourceId, destinationId);
 
 - zoom
 - multi finger swipe
-
-```
-
-```

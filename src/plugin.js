@@ -1,4 +1,4 @@
-import BasePlugin from '@appium/base-plugin';
+import { BasePlugin } from 'appium/plugin';
 import dragAndDrop from './gestures/dragAndDrop';
 import SwipeBuilder from './gestures/swipe';
 import doubleTapBuilder from './gestures/doubleTap';
