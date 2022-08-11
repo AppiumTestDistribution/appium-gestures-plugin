@@ -1,7 +1,7 @@
 {
   "name": "appium-gestures-plugin",
   "version": "1.0.0-beta.4",
-  "description": "",
+  "description": "This is an Appium plugin designed to perform gestures using W3C Actions.",
   "main": "./lib/index.js",
   "scripts": {
     "build": "npx tsc",
@@ -30,9 +30,7 @@
     "url": "https://github.com/AppiumTestDistribution/appium-gestures-plugin/issues"
   },
   "homepage": "https://github.com/AppiumTestDistribution/appium-gestures-plugin#readme",
-  "dependencies": {
-    "axios": "^0.21.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.13.0",

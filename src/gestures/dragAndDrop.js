@@ -1,22 +1,16 @@
 import * as Element from '../element';
-import { post } from '../Api';
 import log from '../logger';
-import sessionInfo from '../sessionInfo';
 
 export default function DragAndDropBuilder(sourceId, destinationId, driver) {
-  const driverInfo = sessionInfo(driver);
   return {
-    dragAndDrop: dragAndDrop(sourceId, destinationId, driverInfo),
+    dragAndDrop: dragAndDrop(sourceId, destinationId, driver),
   };
 }
 
-async function dragAndDrop(sourceId, destinationId, driverInfo) {
-  const sourceElementUrl = `${driverInfo.driverUrl}/element/${sourceId}`;
-  const destinationElementUrl = `${driverInfo.driverUrl}/element/${destinationId}`;
-
+async function dragAndDrop(sourceId, destinationId, driver) {
   const [source, destination] = await Promise.all([
-    Element.getElementRect(sourceElementUrl),
-    Element.getElementRect(destinationElementUrl),
+    driver.getElementRect(sourceId),
+    driver.getElementRect(destinationId),
   ]);
 
   const [{ x: sourceX, y: sourceY }, { x: destinationX, y: destinationY }] = await Promise.all([
@@ -29,61 +23,50 @@ async function dragAndDrop(sourceId, destinationId, driverInfo) {
     type: 'pause',
   };
 
-  const actionsData = {
-    actions: [
-      {
-        id: 'finger',
-        type: 'pointer',
-        parameters: {
-          pointerType: 'touch',
-        },
-        actions: [
-          {
-            duration: 0,
-            x: sourceX,
-            y: sourceY,
-            type: 'pointerMove',
-            origin: 'viewport',
-          },
-          {
-            button: 1,
-            type: 'pointerDown',
-          },
-          {
-            duration: 600,
-            type: 'pause',
-          },
-          {
-            duration: 600,
-            x: destinationX,
-            y: destinationY,
-            type: 'pointerMove',
-            origin: 'viewport',
-          },
-          {
-            button: 1,
-            type: 'pointerUp',
-          },
-        ],
+  const actionsData = [
+    {
+      id: 'finger',
+      type: 'pointer',
+      parameters: {
+        pointerType: 'touch',
       },
-    ],
-  };
+      actions: [
+        {
+          duration: 0,
+          x: sourceX,
+          y: sourceY,
+          type: 'pointerMove',
+          origin: 'viewport',
+        },
+        {
+          button: 1,
+          type: 'pointerDown',
+        },
+        {
+          duration: 600,
+          type: 'pause',
+        },
+        {
+          duration: 600,
+          x: destinationX,
+          y: destinationY,
+          type: 'pointerMove',
+          origin: 'viewport',
+        },
+        {
+          button: 1,
+          type: 'pointerUp',
+        },
+      ],
+    },
+  ];
 
-  let actionsUrl = `${driverInfo.driverUrl}/actions`;
-  log.info(`Performing Drag and Drop ${actionsUrl} with ${JSON.stringify(actionsData)}`);
-
-  if (driverInfo.automationName === 'XCuiTest') {
-    await post({
-      url: actionsUrl,
-      data: actionsData,
-    });
+  if (driver.caps.automationName === 'XCuiTest') {
+    await driver.performActions(actionsData);
   } else {
     log.info('Drag and Drop for android');
     const androidActions = actionsData;
-    androidActions.actions[0].actions.unshift(androidPauseAction);
-    await post({
-      url: actionsUrl,
-      data: androidActions,
-    });
+    androidActions[0].actions.unshift(androidPauseAction);
+    await driver.performActions(actionsData);
   }
 }

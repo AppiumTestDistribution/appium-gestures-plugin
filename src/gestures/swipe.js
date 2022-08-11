@@ -1,18 +1,14 @@
-import sessionInfo from '../sessionInfo';
 import * as Element from '../element';
 import log from '../logger';
-import { post } from '../Api';
 
 export default function SwipeBuilder(elementId, percentage, direction, driver) {
-  const driverInfo = sessionInfo(driver);
   return {
-    swipe: swipe(elementId, percentage, direction, driverInfo),
+    swipe: swipe(elementId, percentage, direction, driver),
   };
 }
 
-async function swipe(elementId, percentage, direction, driverInfo) {
-  const url = `${driverInfo.driverUrl}/element/${elementId}`;
-  const value = await Element.getElementRect(url);
+async function swipe(elementId, percentage, direction, driver) {
+  const value = await driver.getElementRect(elementId);
   log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
   const { x, y } = Element.getCenter(value);
   let sourceX, sourceY, destinationX, destinationY;
@@ -41,48 +37,37 @@ async function swipe(elementId, percentage, direction, driverInfo) {
     duration: 0,
     type: 'pause',
   };
-  const actionsData = {
-    actions: [
-      {
-        id: 'finger',
-        type: 'pointer',
-        parameters: { pointerType: 'touch' },
-        actions: [
-          {
-            duration: 0,
-            x: sourceX,
-            y: sourceY,
-            type: 'pointerMove',
-            origin: 'viewport',
-          },
-          { button: 1, type: 'pointerDown' },
-          { duration: 600, type: 'pause' },
-          {
-            duration: 600,
-            x: destinationX,
-            y: destinationY,
-            type: 'pointerMove',
-            origin: 'viewport',
-          },
-          { button: 1, type: 'pointerUp' },
-        ],
-      },
-    ],
-  };
-  let actionsUrl = `${driverInfo.driverUrl}/actions`;
-  log.info(`Performing Swipe ${actionsUrl} with ${JSON.stringify(actionsData)}`);
-
-  if (driverInfo.automationName === 'XCuiTest') {
-    await post({
-      url: actionsUrl,
-      data: actionsData,
-    });
+  const actionsData = [
+    {
+      id: 'finger',
+      type: 'pointer',
+      parameters: { pointerType: 'touch' },
+      actions: [
+        {
+          duration: 0,
+          x: sourceX,
+          y: sourceY,
+          type: 'pointerMove',
+          origin: 'viewport',
+        },
+        { button: 1, type: 'pointerDown' },
+        { duration: 600, type: 'pause' },
+        {
+          duration: 600,
+          x: destinationX,
+          y: destinationY,
+          type: 'pointerMove',
+          origin: 'viewport',
+        },
+        { button: 1, type: 'pointerUp' },
+      ],
+    },
+  ];
+  if (driver.caps.automationName === 'XCuiTest') {
+    await driver.performActions(actionsData);
   } else {
     const androidActions = actionsData;
-    androidActions.actions[0].actions.unshift(androidPauseAction);
-    await post({
-      url: actionsUrl,
-      data: actionsData,
-    });
+    androidActions[0].actions.unshift(androidPauseAction);
+    await driver.performActions(actionsData);
   }
 }
