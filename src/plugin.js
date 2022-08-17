@@ -3,6 +3,7 @@ import dragAndDrop from './gestures/dragAndDrop';
 import SwipeBuilder from './gestures/swipe';
 import doubleTapBuilder from './gestures/doubleTap';
 import longPressBuilder from './gestures/longPress';
+import { util } from 'appium/support';
 
 export default class GesturesPlugin extends BasePlugin {
   constructor(pluginName) {
@@ -20,8 +21,26 @@ export default class GesturesPlugin extends BasePlugin {
     '/session/:sessionId/plugin/actions/swipe': {
       POST: {
         command: 'swipe',
-        payloadParams: { required: ['elementId', 'percentage', 'direction'] },
-        neverProxy: true,
+        payloadParams: {
+          validate: (jsonObj) => {
+            for (const value of Object.values(jsonObj)) {
+              if (
+                !util.hasValue(value.elementId) &&
+                !util.hasValue(value.percentage) &&
+                !util.hasValue(value.direction)
+              ) {
+                return 'W3C protocol expects elementId, percentage and direction';
+              }
+            }
+          },
+          makeArgs: (jsonObj) => {
+            const args = [];
+            for (const value of Object.values(jsonObj)) {
+              args.push(value);
+            }
+            return args;
+          },
+        },
       },
     },
     '/session/:sessionId/plugin/actions/doubleTap': {
@@ -40,8 +59,8 @@ export default class GesturesPlugin extends BasePlugin {
     },
   };
 
-  async swipe(next, driver, elementId, percentage, direction) {
-    const builder = SwipeBuilder(elementId, percentage, direction, driver);
+  async swipe(next, driver, ...args) {
+    const builder = SwipeBuilder(args, driver);
     await builder.swipe;
   }
 
