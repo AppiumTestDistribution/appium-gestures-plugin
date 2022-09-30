@@ -1,23 +1,36 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
-
-name: Node.js Package
-
+name: release
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - labeled
 
 jobs:
-  publish-npm:
+  release:
+    if: github.event.action != 'labeled'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      # Bump version on merging Pull Requests with specific labels.
+      # (bump:major,bump:minor,bump:patch)
+      - id: bumpr
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: haya14busa/action-bumpr@v1
+
+      # Update corresponding major and minor tag.
+      # e.g. Update v1 and v1.2 when releasing v1.2.3
+      - uses: haya14busa/action-update-semver@v1
+        if: "!steps.bumpr.outputs.skip"
         with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - run: echo "//registry.npmjs.org/:_authToken=${{secrets.npm_token}}" > .npmrc
-      - run: npm ci
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          github_token: ${{ secrets.github_token }}
+          tag: ${{ steps.bumpr.outputs.next_version }}
+  release-check:
+    if: github.event.action == 'labeled'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Post bumpr status comment
+        uses: haya14busa/action-bumpr@v1
