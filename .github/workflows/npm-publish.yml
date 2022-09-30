@@ -14,11 +14,9 @@ jobs:
     if: github.event.action != 'labeled'
     runs-on: ubuntu-latest
     steps:
-      - uses: haya14busa/action-update-semver@v1
-        if: "!steps.bumpr.outputs.skip"
-        with:
-          github_token: ${{ secrets.github_token }}
-          tag: ${{ steps.bumpr.outputs.next_version }}
+      - uses: actions/checkout@v2
+      - name: Post bumpr status comment
+        uses: haya14busa/action-bumpr@v1
 
       # Get tag name.
       - id: tag
@@ -39,7 +37,7 @@ jobs:
           release_name: Release ${{ steps.tag.outputs.value }}
           body: ${{ steps.bumpr.outputs.message }}
           draft: false
-          prerelease: false}
+          prerelease: false
   release-check:
     if: github.event.action == 'labeled'
     runs-on: ubuntu-latest
