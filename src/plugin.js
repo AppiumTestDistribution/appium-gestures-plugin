@@ -1,81 +1,52 @@
 import { BasePlugin } from 'appium/plugin';
 import dragAndDrop from './gestures/dragAndDrop';
-import SwipeBuilder from './gestures/swipe';
-import doubleTapBuilder from './gestures/doubleTap';
-import longPressBuilder from './gestures/longPress';
-import { util } from 'appium/support';
+import swipe from './gestures/swipe';
+import doubleTap from './gestures/doubleTap';
+import longPress from './gestures/longPress';
 
 export default class GesturesPlugin extends BasePlugin {
+  static executeMethodMap = {
+    'gesture: dragAndDrop': {
+      command: 'dragAndDrop',
+      params: { required: ['sourceId', 'destinationId'] },
+    },
+    'gesture: swipe': {
+      command: 'swipe',
+      params: {
+        required: ['elementId', 'percentage', 'direction'],
+      },
+    },
+    'gesture: doubleTap': {
+      command: 'doubleTap',
+      params: { required: ['elementId'] },
+    },
+    'gesture: longPress': {
+      command: 'longPress',
+      params: { required: ['elementId', 'pressure', 'duration'] },
+    },
+  };
+
   constructor(pluginName) {
     super(pluginName);
   }
 
-  static newMethodMap = {
-    '/session/:sessionId/plugin/actions/dragAndDrop': {
-      POST: {
-        command: 'dragAndDrop',
-        payloadParams: { required: ['sourceId', 'destinationId'] },
-        neverProxy: true,
-      },
-    },
-    '/session/:sessionId/plugin/actions/swipe': {
-      POST: {
-        command: 'swipe',
-        payloadParams: {
-          validate: (jsonObj) => {
-            for (const value of Object.values(jsonObj)) {
-              if (
-                !util.hasValue(value.elementId) &&
-                !util.hasValue(value.percentage) &&
-                !util.hasValue(value.direction)
-              ) {
-                return 'W3C protocol expects elementId, percentage and direction';
-              }
-            }
-          },
-          makeArgs: (jsonObj) => {
-            const args = [];
-            for (const value of Object.values(jsonObj)) {
-              args.push(value);
-            }
-            return args;
-          },
-        },
-      },
-    },
-    '/session/:sessionId/plugin/actions/doubleTap': {
-      POST: {
-        command: 'doubleTap',
-        payloadParams: { required: ['elementId'] },
-        neverProxy: true,
-      },
-    },
-    '/session/:sessionId/plugin/actions/longPress': {
-      POST: {
-        command: 'longPress',
-        payloadParams: { required: ['elementId', 'pressure', 'duration'] },
-        neverProxy: true,
-      },
-    },
-  };
+  async execute(next, driver, script, args) {
+    return await this.executeMethod(next, driver, script, args);
+  }
 
-  async swipe(next, driver, ...args) {
-    const builder = SwipeBuilder(args, driver);
-    await builder.swipe;
+  async swipe(next, driver, elementId, percentage, direction) {
+    await swipe(elementId, percentage, direction, driver);
   }
 
   async dragAndDrop(next, driver, sourceId, destinationId) {
-    const builder = dragAndDrop(sourceId, destinationId, driver);
-    await builder.dragAndDrop;
+    await dragAndDrop(sourceId, destinationId, driver);
   }
 
   async doubleTap(next, driver, elementId) {
-    const builder = doubleTapBuilder(elementId, driver);
-    await builder.doubleTap;
+    await doubleTap(elementId, driver);
   }
 
   async longPress(next, driver, elementId, pressure, duration) {
-    const builder = longPressBuilder(elementId, pressure, duration, driver);
-    await builder.longPress;
+    await longPress(elementId, pressure, duration, driver);
   }
 }

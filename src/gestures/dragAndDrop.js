@@ -1,13 +1,7 @@
 import * as Element from '../element';
 import log from '../logger';
 
-export default function DragAndDropBuilder(sourceId, destinationId, driver) {
-  return {
-    dragAndDrop: dragAndDrop(sourceId, destinationId, driver),
-  };
-}
-
-async function dragAndDrop(sourceId, destinationId, driver) {
+export default async function dragAndDrop(sourceId, destinationId, driver) {
   const [source, destination] = await Promise.all([
     driver.getElementRect(sourceId),
     driver.getElementRect(destinationId),
@@ -27,25 +21,11 @@ async function dragAndDrop(sourceId, destinationId, driver) {
     {
       id: 'finger',
       type: 'pointer',
-      parameters: {
-        pointerType: 'touch',
-      },
+      parameters: { pointerType: 'touch' },
       actions: [
-        {
-          duration: 0,
-          x: sourceX,
-          y: sourceY,
-          type: 'pointerMove',
-          origin: 'viewport',
-        },
-        {
-          button: 1,
-          type: 'pointerDown',
-        },
-        {
-          duration: 600,
-          type: 'pause',
-        },
+        { duration: 0, x: sourceX, y: sourceY, type: 'pointerMove', origin: 'viewport' },
+        { button: 1, type: 'pointerDown' },
+        { duration: 600, type: 'pause' },
         {
           duration: 600,
           x: destinationX,
@@ -53,10 +33,7 @@ async function dragAndDrop(sourceId, destinationId, driver) {
           type: 'pointerMove',
           origin: 'viewport',
         },
-        {
-          button: 1,
-          type: 'pointerUp',
-        },
+        { button: 1, type: 'pointerUp' },
       ],
     },
   ];

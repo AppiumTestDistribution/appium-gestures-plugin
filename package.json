@@ -8,8 +8,12 @@
     "prepublish": "npx tsc",
     "lint": "eslint '**/*.js' --fix",
     "prettier": "prettier '**/*.js' --write --single-quote",
+    "appium-home": "rm -rf rm -rf /tmp/some-temp-dir && export APPIUM_HOME=/tmp/some-temp-dir",
     "install-plugin": "npm run build && appium plugin install --source=local $(pwd)",
-    "reinstall-plugin": "(appium plugin uninstall gestures || exit 0) && npm run install-plugin"
+    "clear-cache": "rm -rf $HOME/.cache/appium-gestures-plugin",
+    "install-driver": "export APPIUM_HOME=/tmp/some-temp-dir && appium driver install uiautomator2",
+    "reinstall-plugin": "export APPIUM_HOME=/tmp/some-temp-dir && npm run appium-home && (appium plugin uninstall gestures || exit 0) && npm run install-plugin",
+    "run-server": "export APPIUM_HOME=/tmp/some-temp-dir && appium server -ka 800 --use-plugins=gestures -pa /wd/hub "
   },
   "repository": {
     "type": "git",
@@ -30,7 +34,6 @@
     "url": "https://github.com/AppiumTestDistribution/appium-gestures-plugin/issues"
   },
   "homepage": "https://github.com/AppiumTestDistribution/appium-gestures-plugin#readme",
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
@@ -53,7 +56,7 @@
     "typescript": "^4.2.3"
   },
   "peerDependencies": {
-    "appium": "^2.0.0-beta.42"
+    "appium": "^2.0.0-beta.61"
   },
   "appium": {
     "pluginName": "gestures",
