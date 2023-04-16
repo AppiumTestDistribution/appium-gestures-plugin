@@ -1,40 +1,28 @@
 import * as Element from '../element';
 import log from '../logger';
 
-export default function longPressBuilder(elementId, pressure, duration, driver) {
-  return {
-    longPress: longPress(elementId, pressure, duration, driver),
-  };
-}
+export default async function longPress(elementId, pressure, duration, driver) {
+  const elementRect = await driver.getElementRect(elementId);
+  log.info(
+    `Performing a long press on element ${elementId} with pressure ${pressure}% and duration ${duration}ms`
+  );
+  const { x, y } = Element.getCenter(elementRect);
 
-async function longPress(elementId, pressure, duration, driver) {
-  const value = await driver.getElementRect(elementId);
-  log.info(`LongPress at a pressure ${pressure}% of the element ${elementId}`);
-  const { x, y } = Element.getCenter(value);
-  const androidPauseAction = {
-    duration: 0,
-    type: 'pause',
+  const actionsData = {
+    id: 'finger',
+    type: 'pointer',
+    parameters: { pointerType: 'touch' },
+    actions: [
+      { duration: 0, x, y, type: 'pointerMove', origin: 'viewport' },
+      { button: 1, pressure, type: 'pointerDown' },
+      { duration, type: 'pause' },
+      { button: 1, type: 'pointerUp' },
+    ],
   };
-  const actionsData = [
-    {
-      id: 'finger',
-      type: 'pointer',
-      parameters: { pointerType: 'touch' },
-      actions: [
-        { duration: 0, type: 'pause' },
-        { duration: 0, x, y, type: 'pointerMove', origin: 'viewport' },
-        { button: 1, pressure, type: 'pointerDown' },
-        { duration, type: 'pause' },
-        { button: 1, type: 'pointerUp' },
-      ],
-    },
-  ];
 
-  if (driver.caps.automationName === 'XCuiTest') {
-    await driver.performActions(actionsData);
-  } else {
-    const androidActions = actionsData;
-    androidActions[0].actions.unshift(androidPauseAction);
-    await driver.performActions(actionsData);
+  if (driver.caps.automationName !== 'XCuiTest') {
+    actionsData.actions.unshift({ duration: 0, type: 'pause' });
   }
+
+  await driver.performActions([actionsData]);
 }
