@@ -1,6 +1,6 @@
 # appium-gestures-plugin
 
-This is an Appium plugin designed to perform gestures using W3C Actions.
+This is an Appium plugin designed to perform basic gestures using W3C Actions.
 
 ## Prerequisite
 
@@ -10,7 +10,7 @@ Appium version 2.0
 
 Install the plugin using Appium's plugin CLI, either as a named plugin or via NPM:
 
-```
+```shell
 appium plugin install --source=npm appium-gestures-plugin
 ```
 
@@ -18,13 +18,13 @@ appium plugin install --source=npm appium-gestures-plugin
 
 The plugin will not be active unless turned on when invoking the Appium server:
 
-```
+```shell
 appium --use-plugins=gestures
 ```
 
 # Drag and Drop test without plugin
 
-```
+```java
 WebElement dragMe = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
 Point source = dragMe.getCenter();
 WebElement dropzone = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
@@ -46,84 +46,54 @@ driver.perform(singletonList(dragNDrop));
 
 # Drag and Drop
 
-```
+```java
 RemoteWebElement source = (RemoteWebElement) wait
                 .until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
 RemoteWebElement destination = (RemoteWebElement) wait
                 .until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/dragAndDrop",
-                driver.getSessionId()), "dragAndDrop");
-driver.execute("dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
+driver.executeScript("gesture: dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
 ```
 
 # Horizontal Swipe
 
-```
+```java
 RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("slider"));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", driver.getSessionId()), "swipe");
-
-driver.execute("swipe", Map.of("elementId", slider.getId(), "percentage", 50, "direction", "right"));
+driver.executeScript("gesture: swipe", ImmutableMap.of("elementId", slider.getId(), "percentage", 50, "direction", "right"));
 ```
 
 # Vertical Swipe
 
-```
+```java
 RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("listview"));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/swipe", driver.getSessionId()), "swipe");
-
-driver.execute("swipe", Map.of("elementId", slider.getId(), "percentage", 50, "direction", "up"));
+driver.executeScript("gesture: swipe", ImmutableMap.of("elementId", slider.getId(), "percentage", 50, "direction", "up"));
 ```
 
 # Double Tap
 
-```
+```java
 RemoteWebElement doubleTapMe = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("doubleTapMe"));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/doubleTap", driver.getSessionId()), "doubleTap");
-
-driver.execute("doubleTap", Map.of("elementId", doubleTapMe.getId()));
+driver.executeScript("gesture: doubleTap", ImmutableMap.of("elementId", doubleTapMe.getId()));
 ```
 
 # Long Press
 
 Pressure has to be between 0 and 1.
 
-```
+```java
 RemoteWebElement longPress = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("longpress"));
 
-driver.addCommand(HttpMethod.POST, String.format("/session/%s/plugin/actions/longPress", androidDriver.getSessionId()), "longPress");
-
-driver.execute("longPress", Map.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
+driver.executeScript("gesture: longPress", ImmutableMap.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
 
 ```
 
 # WDIO
 
-```
-driver.addCommand(
-      'dragAndDrop',
-      command('POST', '/session/:sessionId/plugin/actions/dragAndDrop', {
-        command: 'dragAndDrop',
-        parameters: [
-          {
-            name: 'sourceId',
-            type: 'string',
-            description: 'a valid parameter',
-            required: true,
-          },
-          {
-            name: 'destinationId',
-            type: 'string',
-            description: 'a valid parameter',
-            required: true,
-          },
-        ],
-      })
-    );
-await driver.dragAndDrop(sourceId, destinationId);
+```js
+await driver.execute('gesture: dragAndDrop', { sourceId, destinationId });
 ```
 
 ## Supported
