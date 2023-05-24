@@ -10,34 +10,37 @@ export default async function swipe(elementId, percentage, direction, driver) {
     log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
 
     const { x, y } = Element.getCenter(value);
-    let sourceX, sourceY, destinationX, destinationY;
 
-    if (direction === 'left') {
-      sourceX = x + (value.width * 49) / 100;
-      sourceY = y;
-      destinationX = (sourceX * percentage) / 100;
-      destinationY = y;
-    } else if (direction === 'right') {
-      sourceX = x - (value.width * 49) / 100;
-      sourceY = y;
-      destinationX = sourceX + (sourceX * percentage) / 100;
-      destinationY = y;
-    } else if (direction === 'up') {
-      sourceX = x;
-      sourceY = y + (value.height * 49) / 100;
-      destinationX = x;
-      destinationY = (sourceY * percentage) / 100;
-    } else if (direction === 'down') {
-      sourceX = x;
-      sourceY = y - (value.height * 49) / 100;
-      destinationX = x;
-      destinationY = sourceY + (sourceY * percentage) / 100;
-    }
-
-    const androidPauseAction = {
-      duration: 0,
-      type: 'pause',
+    const directionActions = {
+      left: {
+        sourceX: x + (value.width * 49) / 100,
+        sourceY: y,
+        destinationX: (x + (value.width * 49) / 100) * (percentage / 100),
+        destinationY: y,
+      },
+      right: {
+        sourceX: x - (value.width * 49) / 100,
+        sourceY: y,
+        destinationX:
+          x - (value.width * 49) / 100 + (x - (value.width * 49) / 100) * (percentage / 100),
+        destinationY: y,
+      },
+      up: {
+        sourceX: x,
+        sourceY: y + (value.height * 49) / 100,
+        destinationX: x,
+        destinationY: (y + (value.height * 49) / 100) * (percentage / 100),
+      },
+      down: {
+        sourceX: x,
+        sourceY: y - (value.height * 49) / 100,
+        destinationX: x,
+        destinationY:
+          y - (value.height * 49) / 100 + (y - (value.height * 49) / 100) * (percentage / 100),
+      },
     };
+
+    const { sourceX, sourceY, destinationX, destinationY } = directionActions[direction];
 
     const actionsData = {
       id: `${elementId}`,
@@ -65,8 +68,7 @@ export default async function swipe(elementId, percentage, direction, driver) {
     };
 
     if (driver.caps.automationName !== 'XCuiTest') {
-      const androidActions = actionsData;
-      androidActions.actions.unshift(androidPauseAction);
+      actionsData.actions.unshift({ duration: 0, type: 'pause' });
     }
 
     swipeAction.push(actionsData);
