@@ -4,7 +4,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - '*.*.*'
   pull_request:
     types:
       - labeled
@@ -26,17 +26,20 @@ jobs:
           if_true: ${{ github.ref }}
           if_false: ${{ steps.bumpr.outputs.next_version }}
 
-      # Create release.
-      - uses: actions/create-release@v1
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: justincy/github-action-npm-release@2.0.2
+        id: release
+      - uses: actions/setup-node@v3
+        if: steps.release.outputs.released == 'true'
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.bumpr.outputs.message }}
-          draft: false
-          prerelease: false
+          registry-url: 'https://registry.npmjs.org'
+          node-version: 16
+      - name: Publish
+        if: steps.release.outputs.released == 'true'
+        run: echo "//registry.npmjs.org/:_authToken=${{secrets.npm_token}}" > .npmrc && npm ci && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+
   release-check:
     if: github.event.action == 'labeled'
     runs-on: ubuntu-latest
