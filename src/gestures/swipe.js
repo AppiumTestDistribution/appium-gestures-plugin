@@ -1,3 +1,4 @@
+import { logger } from 'appium/support';
 import * as Element from '../element';
 import log from '../logger';
 
@@ -77,10 +78,12 @@ function getActionsData(elementId, pointer, driver) {
 
 async function isElementFound(driver, strategy, selector) {
   try {
-    log.info(`Checking if element ${selector} ${strategy} is found`);
+    log.info(`Checking if element ${selector} ${strategy} is there or not`);
     await driver.findElement(strategy, selector);
+    log.info(`element ${selector} ${strategy} is found`);
     return true;
   } catch (e) {
+    log.info(`element ${selector} ${strategy} is not found`);
     return false;
   }
 }
@@ -116,6 +119,7 @@ export async function swipeUntilElementExist(
     let count = 0;
     let isElement = await isElementFound(driver, strategy, selector);
     while (count < maxCount && !isElement) {
+      log.info('Swiping now...');
       swipe(scrollableView, percentage, direction, driver);
       count++;
       isElement = await isElementFound(driver, strategy, selector);
