@@ -1,6 +1,6 @@
 import { BasePlugin } from 'appium/plugin';
 import dragAndDrop from './gestures/dragAndDrop';
-import swipe from './gestures/swipe';
+import { swipe, swipeUntilElementExist } from './gestures/swipe';
 import doubleTap from './gestures/doubleTap';
 import longPress from './gestures/longPress';
 
@@ -14,6 +14,12 @@ export default class GesturesPlugin extends BasePlugin {
       command: 'swipe',
       params: {
         required: ['elementId', 'percentage', 'direction'],
+      },
+    },
+    'gesture: swipeUntilElementExist': {
+      command: 'swipeUntilElementExist',
+      params: {
+        required: ['scrollableView', 'strategy', 'selector', 'percentage', 'direction', 'maxCount'],
       },
     },
     'gesture: doubleTap': {
@@ -36,6 +42,27 @@ export default class GesturesPlugin extends BasePlugin {
 
   async swipe(next, driver, elementId, percentage, direction) {
     await swipe(elementId, percentage, direction, driver);
+  }
+
+  async swipeUntilElementExist(
+    next,
+    driver,
+    scrollableView,
+    strategy,
+    selector,
+    percentage,
+    direction,
+    maxCount
+  ) {
+    await swipeUntilElementExist(
+      scrollableView,
+      strategy,
+      selector,
+      percentage,
+      direction,
+      maxCount,
+      driver
+    );
   }
 
   async dragAndDrop(next, driver, sourceId, destinationId) {
