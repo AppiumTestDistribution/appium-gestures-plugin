@@ -93,7 +93,7 @@ export async function swipe(elementId, percentage, direction, driver) {
   }
 }
 
-export async function swipeUntilElementExist(
+export async function scrollIntoView(
   scrollableView,
   strategy,
   selector,
