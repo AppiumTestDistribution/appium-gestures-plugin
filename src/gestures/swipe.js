@@ -1,26 +1,26 @@
 import * as Element from '../element';
 import log from '../logger';
 
-const magicNumber = 49;
+const MAGIC_NUMBER = 49;
 
 function getDirectionActions(direction, value, percentage) {
   const { x, y } = Element.getCenter(value);
   const directionActions = {
     left: {
-      sourceX: x + (value.width * magicNumber) / 100,
+      sourceX: x + (value.width * MAGIC_NUMBER) / 100,
       sourceY: y,
-      destinationX: (x + (value.width * magicNumber) / 100) * (percentage / 100),
+      destinationX: (x + (value.width * MAGIC_NUMBER) / 100) * (percentage / 100),
       destinationY: y,
     },
     right: {
-      sourceX: (x + (value.width * magicNumber) / 100) * (percentage / 100),
+      sourceX: (x + (value.width * MAGIC_NUMBER) / 100) * (percentage / 100),
       sourceY: y,
-      destinationX: x + (value.width * magicNumber) / 100,
+      destinationX: x + (value.width * MAGIC_NUMBER) / 100,
       destinationY: y,
     },
     up: {
       sourceX: x,
-      sourceY: y + (value.height * magicNumber) / 100,
+      sourceY: y + (value.height * MAGIC_NUMBER) / 100,
       destinationX: x,
       destinationY: y - percentage / 100,
     },
@@ -28,12 +28,10 @@ function getDirectionActions(direction, value, percentage) {
       sourceX: x,
       sourceY: y - percentage / 100,
       destinationX: x,
-      destinationY: y + (value.height * magicNumber) / 100,
+      destinationY: y + (value.height * MAGIC_NUMBER) / 100,
     },
   };
-  const pointer = directionActions[direction];
-
-  return pointer;
+  return directionActions[direction];
 }
 
 function getActionsData(elementId, pointer, driver) {
@@ -71,45 +69,43 @@ function getActionsData(elementId, pointer, driver) {
 
 async function isElementFound(driver, strategy, selector) {
   try {
-    log.info(`Checking if element ${selector} ${strategy} is there or not`);
+    log.info(`Checking if ${strategy} element '${selector}' is present`);
     await driver.findElement(strategy, selector);
-    log.info(`element ${selector} ${strategy} is found`);
+    log.info(`Element '${selector}' is found`);
     return true;
   } catch (e) {
-    log.info(`element ${selector} ${strategy} is not found`);
+    log.info(`Element '${selector}' is not found`);
     return false;
   }
 }
 
 export async function swipe(elementId, percentage, direction, driver) {
-  {
-    const swipeAction = [];
-    const value = await driver.getElementRect(elementId);
-    log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
-    const pointer = getDirectionActions(direction, value, percentage);
-    const actionsData = getActionsData(elementId, pointer, driver);
-    swipeAction.push(actionsData);
-    await driver.performActions(swipeAction);
-  }
+  const swipeActions = [];
+  const value = await driver.getElementRect(elementId);
+  log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
+  const pointer = getDirectionActions(direction, value, percentage);
+  const actionsData = getActionsData(elementId, pointer, driver);
+  swipeActions.push(actionsData);
+  await driver.performActions(swipeActions);
 }
 
-export async function scrollIntoView(
-  scrollableView,
-  strategy,
-  selector,
-  percentage,
-  direction,
-  maxCount = 5,
-  driver
-) {
-  {
+export async function scrollIntoView(config) {
+  const {
+    scrollableView,
+    strategy,
+    selector,
+    percentage,
+    direction,
+    maxCount = 5,
+    driver,
+  } = config;
+
+  for (
     let count = 0;
-    let isElement = await isElementFound(driver, strategy, selector);
-    while (count < maxCount && !isElement) {
-      log.info('Swiping now...');
-      await swipe(scrollableView, percentage, direction, driver);
-      count++;
-      isElement = await isElementFound(driver, strategy, selector);
-    }
+    count < maxCount && !(await isElementFound(driver, strategy, selector));
+    count++
+  ) {
+    log.info('Swiping now...');
+    await swipe(scrollableView, percentage, direction, driver);
   }
 }

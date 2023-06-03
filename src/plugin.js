@@ -54,15 +54,15 @@ export default class GesturesPlugin extends BasePlugin {
     direction,
     maxCount
   ) {
-    await scrollIntoView(
+    await scrollIntoView({
       scrollableView,
       strategy,
       selector,
       percentage,
       direction,
       maxCount,
-      driver
-    );
+      driver,
+    });
   }
 
   async dragAndDrop(next, driver, sourceId, destinationId) {
