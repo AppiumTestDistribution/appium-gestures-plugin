@@ -1,4 +1,3 @@
-import { logger } from 'appium/support';
 import * as Element from '../element';
 import log from '../logger';
 
@@ -14,28 +13,22 @@ function getDirectionActions(direction, value, percentage) {
       destinationY: y,
     },
     right: {
-      sourceX: x - (value.width * magicNumber) / 100,
+      sourceX: (x + (value.width * magicNumber) / 100) * (percentage / 100),
       sourceY: y,
-      destinationX:
-        x -
-        (value.width * magicNumber) / 100 +
-        (x - (value.width * magicNumber) / 100) * (percentage / 100),
+      destinationX: x + (value.width * magicNumber) / 100,
       destinationY: y,
     },
     up: {
       sourceX: x,
       sourceY: y + (value.height * magicNumber) / 100,
       destinationX: x,
-      destinationY: (y + (value.height * magicNumber) / 100) * (percentage / 100),
+      destinationY: y - percentage / 100,
     },
     down: {
       sourceX: x,
-      sourceY: y - (value.height * magicNumber) / 100,
+      sourceY: y - percentage / 100,
       destinationX: x,
-      destinationY:
-        y -
-        (value.height * magicNumber) / 100 +
-        (y - (value.height * magicNumber) / 100) * (percentage / 100),
+      destinationY: y + (value.height * magicNumber) / 100,
     },
   };
   const pointer = directionActions[direction];
