@@ -84,17 +84,11 @@ async function isElementFound(driver, strategy, selector) {
 export async function swipe(elementId, percentage, direction, driver) {
   {
     const swipeAction = [];
-
     const value = await driver.getElementRect(elementId);
-
     log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
-
     const pointer = getDirectionActions(direction, value, percentage);
-
     const actionsData = getActionsData(elementId, pointer, driver);
-
     swipeAction.push(actionsData);
-
     await driver.performActions(swipeAction);
   }
 }
@@ -113,7 +107,7 @@ export async function swipeUntilElementExist(
     let isElement = await isElementFound(driver, strategy, selector);
     while (count < maxCount && !isElement) {
       log.info('Swiping now...');
-      swipe(scrollableView, percentage, direction, driver);
+      await swipe(scrollableView, percentage, direction, driver);
       count++;
       isElement = await isElementFound(driver, strategy, selector);
     }
