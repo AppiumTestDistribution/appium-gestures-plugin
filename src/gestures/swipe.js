@@ -3,6 +3,37 @@ import log from '../logger';
 
 const MAGIC_NUMBER = 49;
 
+export async function swipe(elementId, percentage, direction, driver) {
+  const swipeActions = [];
+  const value = await driver.getElementRect(elementId);
+  log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
+  const pointer = getDirectionActions(direction, value, percentage);
+  const actionsData = getActionsData(elementId, pointer, driver);
+  swipeActions.push(actionsData);
+  await driver.performActions(swipeActions);
+}
+
+export async function scrollElementIntoView(config) {
+  const {
+    scrollableView,
+    strategy,
+    selector,
+    percentage,
+    direction,
+    maxCount = 5,
+    driver,
+  } = config;
+
+  for (
+    let count = 0;
+    count < maxCount && !(await isElementFound(driver, strategy, selector));
+    count++
+  ) {
+    log.info('Swiping now...');
+    await swipe(scrollableView, percentage, direction, driver);
+  }
+}
+
 function getDirectionActions(direction, value, percentage) {
   const { x, y } = Element.getCenter(value);
   const directionActions = {
@@ -76,36 +107,5 @@ async function isElementFound(driver, strategy, selector) {
   } catch (e) {
     log.info(`Element '${selector}' is not found`);
     return false;
-  }
-}
-
-export async function swipe(elementId, percentage, direction, driver) {
-  const swipeActions = [];
-  const value = await driver.getElementRect(elementId);
-  log.info(`Swiping ${direction} at ${percentage}% of the element ${elementId}`);
-  const pointer = getDirectionActions(direction, value, percentage);
-  const actionsData = getActionsData(elementId, pointer, driver);
-  swipeActions.push(actionsData);
-  await driver.performActions(swipeActions);
-}
-
-export async function scrollIntoView(config) {
-  const {
-    scrollableView,
-    strategy,
-    selector,
-    percentage,
-    direction,
-    maxCount = 5,
-    driver,
-  } = config;
-
-  for (
-    let count = 0;
-    count < maxCount && !(await isElementFound(driver, strategy, selector));
-    count++
-  ) {
-    log.info('Swiping now...');
-    await swipe(scrollableView, percentage, direction, driver);
   }
 }

@@ -1,6 +1,6 @@
 import { BasePlugin } from 'appium/plugin';
 import dragAndDrop from './gestures/dragAndDrop';
-import { swipe, scrollIntoView } from './gestures/swipe';
+import { swipe, scrollElementIntoView } from './gestures/swipe';
 import doubleTap from './gestures/doubleTap';
 import longPress from './gestures/longPress';
 
@@ -16,8 +16,8 @@ export default class GesturesPlugin extends BasePlugin {
         required: ['elementId', 'percentage', 'direction'],
       },
     },
-    'gesture: scrollIntoView': {
-      command: 'scrollIntoView',
+    'gesture: scrollElementIntoView': {
+      command: 'scrollElementIntoView',
       params: {
         required: ['scrollableView', 'strategy', 'selector', 'percentage', 'direction', 'maxCount'],
       },
@@ -44,7 +44,7 @@ export default class GesturesPlugin extends BasePlugin {
     await swipe(elementId, percentage, direction, driver);
   }
 
-  async scrollIntoView(
+  async scrollElementIntoView(
     next,
     driver,
     scrollableView,
@@ -54,7 +54,7 @@ export default class GesturesPlugin extends BasePlugin {
     direction,
     maxCount
   ) {
-    await scrollIntoView({
+    await scrollElementIntoView({
       scrollableView,
       strategy,
       selector,
