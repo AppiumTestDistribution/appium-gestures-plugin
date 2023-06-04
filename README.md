@@ -22,53 +22,69 @@ The plugin will not be active unless turned on when invoking the Appium server:
 appium --use-plugins=gestures
 ```
 
-# Drag and Drop test without plugin
+# Usage
+
+Sample app used to demonstrate below gesture is available [here](https://github.com/webdriverio/native-demo-app/releases)
+
+# Swipe Left
 
 ```java
-WebElement dragMe = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
-Point source = dragMe.getCenter();
-WebElement dropzone = wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
-Point target = dropzone.getCenter();
-PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
-Sequence dragNDrop = new Sequence(finger, 1);
-dragNDrop.addAction(finger.createPointerMove(ofMillis(0),
-          PointerInput.Origin.viewport(), source.x, source.y));
-dragNDrop.addAction(finger.createPointerDown(PointerInput.MouseButton.MIDDLE.asArg()));
-dragNDrop.addAction(new Pause(finger, ofMillis(600)));
-dragNDrop.addAction(finger.createPointerMove(ofMillis(600),
-          PointerInput.Origin.viewport(),
-          target.x, target.y));
-dragNDrop.addAction(finger.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg()));
-driver.perform(singletonList(dragNDrop));
+RemoteWebElement carousel = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Carousel")));
+
+driver.executeScript("gesture: swipe", Map.of("elementId", carousel.getId(), "percentage", 50, "direction", "left"));
 ```
 
-# Usage
+# Swipe Right
+
+```java
+RemoteWebElement carousel = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Carousel")));
+
+driver.executeScript("gesture: swipe", Map.of("elementId", carousel.getId(), "percentage", 50, "direction", "right"));
+```
+
+# Swipe Up
+
+```java
+RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
+
+driver.executeScript("gesture: swipe", Map.of("elementId", scrollView.getId(),
+                "percentage", 50,
+                "direction", "up"));
+```
+
+# Swipe Down
+
+```java
+RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
+
+driver.executeScript("gesture: swipe", Map.of("elementId", scrollView.getId(),
+                "percentage", 50,
+                "direction", "down"));
+```
+
+# scrollElementIntoView
+
+```java
+RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
+
+driver.executeScript("gesture: scrollElementIntoView", Map.of("scrollableView", scrollView.getId(),
+    "strategy", "accessibility id",
+    "selector", "WebdriverIO logo",
+    "percentage", 50,
+    "direction", "up",
+    "maxCount", 3));
+
+```
+
+Sample app used to demonstrate below gesture is available [here](https://github.com/AppiumTestDistribution/appium-demo/blob/main/VodQA.apk)
 
 # Drag and Drop
 
 ```java
-RemoteWebElement source = (RemoteWebElement) wait
-    .until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
-RemoteWebElement destination = (RemoteWebElement) wait
-    .until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
+RemoteWebElement source = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
+RemoteWebElement destination = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
 
-driver.executeScript("gesture: dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
-```
-
-# Horizontal Swipe
-
-```java
-RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("slider"));
-
-driver.executeScript("gesture: swipe", ImmutableMap.of("elementId", slider.getId(), "percentage", 50, "direction", "right"));
-```
-
-# Vertical Swipe
-
-```java
-RemoteWebElement slider = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("listview"));
-
-driver.executeScript("gesture: swipe", ImmutableMap.of("elementId", slider.getId(), "percentage", 50, "direction", "up"));
+driver.executeScript("gesture: dragAndDrop", Map.of("sourceId", source.getId(), "destinationId", destination.getId()));
 ```
 
 # Double Tap
@@ -76,7 +92,7 @@ driver.executeScript("gesture: swipe", ImmutableMap.of("elementId", slider.getId
 ```java
 RemoteWebElement doubleTapMe = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("doubleTapMe"));
 
-driver.executeScript("gesture: doubleTap", ImmutableMap.of("elementId", doubleTapMe.getId()));
+driver.executeScript("gesture: doubleTap", Map.of("elementId", doubleTapMe.getId()));
 ```
 
 # Long Press
@@ -86,20 +102,7 @@ Pressure has to be between 0 and 1.
 ```java
 RemoteWebElement longPress = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("longpress"));
 
-driver.executeScript("gesture: longPress", ImmutableMap.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
-
-```
-
-# ScrollIntoView
-
-```java
-ImmutableMap map = ImmutableMap.of("scrollableView", scrollView.getId(),
-    "strategy", "accessibility id",
-    "selector", "WebdriverIO logo",
-    "percentage", 50,
-    "direction", "up",
-    "maxCount", 3);
-driver.executeScript("gesture: scrollElementIntoView", map);
+driver.executeScript("gesture: longPress", Map.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
 
 ```
 
@@ -112,10 +115,10 @@ await driver.execute('gesture: dragAndDrop', { sourceId, destinationId });
 ## Supported
 
 - Swipe Left, right, up and down
+- scrollElementIntoView
 - Drag and Drop
 - Double Tap
 - Long Press
-- scrollElementIntoView
 
 ### TODO
 
