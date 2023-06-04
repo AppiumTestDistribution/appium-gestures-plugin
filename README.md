@@ -48,9 +48,9 @@ driver.perform(singletonList(dragNDrop));
 
 ```java
 RemoteWebElement source = (RemoteWebElement) wait
-                .until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
+    .until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
 RemoteWebElement destination = (RemoteWebElement) wait
-                .until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
+    .until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
 
 driver.executeScript("gesture: dragAndDrop", ImmutableMap.of("sourceId", source.getId(), "destinationId", destination.getId()));
 ```
@@ -90,6 +90,19 @@ driver.executeScript("gesture: longPress", ImmutableMap.of("elementId", longPres
 
 ```
 
+# ScrollIntoView
+
+```java
+ImmutableMap map = ImmutableMap.of("scrollableView", scrollView.getId(),
+    "strategy", "accessibility id",
+    "selector", "WebdriverIO logo",
+    "percentage", 50,
+    "direction", "up",
+    "maxCount", 3);
+driver.executeScript("gesture: scrollElementIntoView", map);
+
+```
+
 # WDIO
 
 ```js
@@ -102,6 +115,7 @@ await driver.execute('gesture: dragAndDrop', { sourceId, destinationId });
 - Drag and Drop
 - Double Tap
 - Long Press
+- scrollElementIntoView
 
 ### TODO
 
