@@ -56,7 +56,7 @@
     "typescript": "^5.0.4"
   },
   "peerDependencies": {
-    "appium": "^2.0.0-beta.61"
+    "appium": "^2.0.0-beta.71"
   },
   "appium": {
     "pluginName": "gestures",
