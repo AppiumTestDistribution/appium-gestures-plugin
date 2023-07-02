@@ -1,3 +1,11 @@
+<h1 align="center">
+	<br>
+	<img src="assets/GesturesPlugin.jpg" alt="AppiumGestures">
+	<br>
+	<br>
+	<br>
+</h1>
+
 # appium-gestures-plugin
 
 This is an Appium plugin designed to perform basic gestures using W3C Actions.
