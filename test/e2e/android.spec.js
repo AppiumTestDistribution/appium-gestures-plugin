@@ -8,6 +8,10 @@ const WDIO_PARAMS = {
   port: APPIUM_PORT,
   path: '/wd/hub/',
   logLevel: 'info',
+  waitforTimeout: 10000,
+  mochaOpts: {
+    timeout: 20000,
+  },
 };
 const capabilities = {
   platformName: 'Android',
@@ -22,11 +26,11 @@ describe('Plugin Test', () => {
     driver = await remote({ ...WDIO_PARAMS, capabilities });
   });
 
-  xit('Horizontal swipe test', async () => {
-    console.log(await driver.capabilities.deviceUDID);
+  it('Horizontal swipe test', async () => {
     await driver.$('~login').click();
     await driver.$('~slider1').click();
     const slider = await driver.$('~slider');
+    await slider.waitForDisplayed({ timeout: 10000 });
     await driver.executeScript('gesture: swipe', [
       {
         elementId: slider.elementId,
@@ -37,11 +41,12 @@ describe('Plugin Test', () => {
   });
 
   it('Drag & Drop test', async () => {
-    console.log(await driver.capabilities.deviceUDID);
     await driver.$('~login').click();
     await driver.$('~dragAndDrop').click();
     const dragMe = await driver.$('~dragMe');
+    await dragMe.waitForDisplayed({ timeout: 10000 });
     const dropzone = await driver.$('~dropzone');
+    await dropzone.waitForDisplayed({ timeout: 10000 });
     await driver.executeScript('gesture: dragAndDrop', [
       {
         sourceId: dragMe.elementId,

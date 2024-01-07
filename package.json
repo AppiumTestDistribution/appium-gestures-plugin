@@ -15,7 +15,7 @@
     "install-driver": "export APPIUM_HOME=/tmp/some-temp-dir && appium driver install uiautomator2",
     "install-wait-plugin": "export APPIUM_HOME=/tmp/some-temp-dir && appium plugin install --source=npm appium-wait-plugin",
     "reinstall-plugin": "export APPIUM_HOME=/tmp/some-temp-dir && npm run appium-home && (appium plugin uninstall gestures || exit 0) && npm run install-plugin",
-    "run-server": "export APPIUM_HOME=/tmp/some-temp-dir && appium server -ka 800 --use-plugins=element-wait,gestures -pa /wd/hub "
+    "run-server": "export APPIUM_HOME=/tmp/some-temp-dir && appium server -ka 800 --use-plugins=gestures -pa /wd/hub "
   },
   "repository": {
     "type": "git",
