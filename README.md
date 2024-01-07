@@ -6,7 +6,7 @@
 	<br>
 </h1>
 
-# appium-gestures-plugin
+# appium-gestures-plugin [![npm version](https://badge.fury.io/js/appium-gestures-plugin.svg)](https://badge.fury.io/js/appium-gestures-plugin)
 
 This is an Appium plugin designed to perform basic gestures using W3C Actions.
 
