@@ -72,6 +72,7 @@ driver.executeScript("gesture: swipe", Map.of("elementId", scrollView.getId(),
 
 # scrollElementIntoView
 
+**JAVA**
 ```java
 RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
 
@@ -83,16 +84,34 @@ driver.executeScript("gesture: scrollElementIntoView", Map.of("scrollableView", 
     "maxCount", 3));
 
 ```
+**PYTHON**
+```python
+list_view = driver.find_element(by=AppiumBy.ID, value='android:id/list')
+driver.execute_script('gesture: scrollElementIntoView',
+                      {'scrollableView': list_view.id, 'strategy': 'accessibility id', 'selector': 'Picker',
+                       'percentage': 50, 'direction': 'up', 'maxCount': 3})
+```
 
 Sample app used to demonstrate below gesture is available [here](https://github.com/AppiumTestDistribution/appium-demo/blob/main/VodQA.apk)
 
 # Drag and Drop
 
+**JAVA**
 ```java
 RemoteWebElement source = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
 RemoteWebElement destination = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
 
 driver.executeScript("gesture: dragAndDrop", Map.of("sourceId", source.getId(), "destinationId", destination.getId()));
+```
+**PYTHON**
+```python
+el1 = driver.find_element(by=AppiumBy.ID, value='io.appium.android.apis:id/drag_dot_1')
+el2 = driver.find_element(by=AppiumBy.ID, value='io.appium.android.apis:id/drag_dot_2')
+
+driver.execute_script('gesture: dragAndDrop', {
+    'sourceId': el1.id,
+    'destinationId': el2.id,
+})
 ```
 
 # Double Tap
