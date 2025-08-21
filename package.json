@@ -1,6 +1,6 @@
 {
   "name": "appium-gestures-plugin",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "description": "This is an Appium plugin designed to perform gestures using W3C Actions.",
   "main": "./lib/index.js",
   "scripts": {
@@ -59,10 +59,10 @@
     "webdriverio": "8.27.0"
   },
   "dependencies": {
-    "@appium/base-plugin": "^2.2.26"
+    "@appium/base-plugin": "^2.2.26 || ^3.0.0"
   },
   "peerDependencies": {
-    "appium": "^2.3.0"
+    "appium": "^2.3.0 || ^3.0.0"
   },
   "appium": {
     "pluginName": "gestures",
