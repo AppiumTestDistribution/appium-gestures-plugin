@@ -35,119 +35,14 @@ appium --use-plugins=gestures
 Sample app used to demonstrate below gesture is available [here](https://github.com/webdriverio/native-demo-app/releases)
 
 # Swipe Left
-
+The code on the main branch does not work on Appium 2.13, Windows 11, Android 13.
+However, the below does:
 ```java
-RemoteWebElement carousel = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Carousel")));
+RemoteWebElement carousel = (RemoteWebElement)
+driver.findElement(AppiumBy.xpath("//...")));
 
 driver.executeScript("gesture: swipe", Map.of("elementId", carousel.getId(), "percentage", 50, "direction", "left"));
-```
 
-# Swipe Right
 
-```java
-RemoteWebElement carousel = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Carousel")));
 
-driver.executeScript("gesture: swipe", Map.of("elementId", carousel.getId(), "percentage", 50, "direction", "right"));
-```
 
-# Swipe Up
-
-```java
-RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
-
-driver.executeScript("gesture: swipe", Map.of("elementId", scrollView.getId(),
-                "percentage", 50,
-                "direction", "up"));
-```
-
-# Swipe Down
-
-```java
-RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
-
-driver.executeScript("gesture: swipe", Map.of("elementId", scrollView.getId(),
-                "percentage", 50,
-                "direction", "down"));
-```
-
-# scrollElementIntoView
-
-**JAVA**
-```java
-RemoteWebElement scrollView = (RemoteWebElement) wait.until(presenceOfElementLocated(AppiumBy.accessibilityId("Swipe-screen")));
-
-driver.executeScript("gesture: scrollElementIntoView", Map.of("scrollableView", scrollView.getId(),
-    "strategy", "accessibility id",
-    "selector", "WebdriverIO logo",
-    "percentage", 50,
-    "direction", "up",
-    "maxCount", 3));
-
-```
-**PYTHON**
-```python
-list_view = driver.find_element(by=AppiumBy.ID, value='android:id/list')
-driver.execute_script('gesture: scrollElementIntoView',
-                      {'scrollableView': list_view.id, 'strategy': 'accessibility id', 'selector': 'Picker',
-                       'percentage': 50, 'direction': 'up', 'maxCount': 3})
-```
-
-Sample app used to demonstrate below gesture is available [here](https://github.com/AppiumTestDistribution/appium-demo/blob/main/VodQA.apk)
-
-# Drag and Drop
-
-**JAVA**
-```java
-RemoteWebElement source = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dragMe")));
-RemoteWebElement destination = (RemoteWebElement) wait.until(elementToBeClickable(AppiumBy.accessibilityId("dropzone")));
-
-driver.executeScript("gesture: dragAndDrop", Map.of("sourceId", source.getId(), "destinationId", destination.getId()));
-```
-**PYTHON**
-```python
-el1 = driver.find_element(by=AppiumBy.ID, value='io.appium.android.apis:id/drag_dot_1')
-el2 = driver.find_element(by=AppiumBy.ID, value='io.appium.android.apis:id/drag_dot_2')
-
-driver.execute_script('gesture: dragAndDrop', {
-    'sourceId': el1.id,
-    'destinationId': el2.id,
-})
-```
-
-# Double Tap
-
-```java
-RemoteWebElement doubleTapMe = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("doubleTapMe"));
-
-driver.executeScript("gesture: doubleTap", Map.of("elementId", doubleTapMe.getId()));
-```
-
-# Long Press
-
-Pressure has to be between 0 and 1.
-
-```java
-RemoteWebElement longPress = (RemoteWebElement) driver.findElement(AppiumBy.accessibilityId("longpress"));
-
-driver.executeScript("gesture: longPress", Map.of("elementId", longPress.getId(), "pressure", 0.5, "duration", 800));
-
-```
-
-# WDIO
-
-```js
-await driver.execute('gesture: dragAndDrop', { sourceId, destinationId });
-```
-
-## Supported
-
-- Swipe Left, right, up and down
-- scrollElementIntoView
-- Drag and Drop
-- Double Tap
-- Long Press
-
-### TODO
-
-- zoom
-- multi finger swipe
